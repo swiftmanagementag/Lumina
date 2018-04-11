@@ -28,14 +28,16 @@ extension LuminaViewController {
     func createUI() {
         Log.verbose("Creating UI")
         self.view.layer.addSublayer(self.previewLayer)
-        self.view.addSubview(self.cancelButton)
+		self.view.addSubview(self.textPromptView)
+		self.view.addSubview(self.confidenceView)
+		self.view.addSubview(self.cancelButton)
         self.view.addSubview(self.shutterButton)
         self.view.addSubview(self.switchButton)
         self.view.addSubview(self.torchButton)
-        self.view.addSubview(self.textPromptView)
         self.view.addGestureRecognizer(self.zoomRecognizer)
         self.view.addGestureRecognizer(self.focusRecognizer)
-        enableUI(valid: false)
+		
+		enableUI(valid: false)
     }
 
     func enableUI(valid: Bool) {
@@ -57,29 +59,38 @@ extension LuminaViewController {
     }
 
     func updateButtonFrames() {
-        self.cancelButton.center = CGPoint(x: self.view.frame.minX + 55, y: self.view.frame.maxY - 45)
-        var minY = self.view.frame.minY
-        if self.view.frame.width > self.view.frame.height {
-            var maxX = self.view.frame.maxX
-            if #available(iOS 11, *) {
-                maxX = self.view.safeAreaLayoutGuide.layoutFrame.maxX
-            }
+
+		var maxY = self.view.frame.maxY
+		var minY = self.view.frame.minY
+		
+		var maxX = self.view.frame.maxX
+		var minX = self.view.frame.minX
+
+		if #available(iOS 11, *) {
+			minX = self.view.safeAreaLayoutGuide.layoutFrame.minX
+			maxX = self.view.safeAreaLayoutGuide.layoutFrame.maxX
+			minY = self.view.safeAreaLayoutGuide.layoutFrame.minY
+			maxY = self.view.safeAreaLayoutGuide.layoutFrame.maxY
+		}
+		if self.view.frame.width > self.view.frame.height {
             self.shutterButton.center = CGPoint(x: maxX - 45, y: self.view.frame.midY)
-        } else {
-            var maxY = self.view.frame.maxY
-            if #available(iOS 11, *) {
-                maxY = self.view.safeAreaLayoutGuide.layoutFrame.maxY
-                minY = self.view.safeAreaLayoutGuide.layoutFrame.minY
-            }
+
+			self.switchButton.center = CGPoint(x: maxX - 45, y: maxY - 90)
+			self.torchButton.center = CGPoint(x: maxX - 45, y: maxY - 30)
+		
+			self.cancelButton.center = CGPoint(x: self.view.frame.maxX - 36, y: minY + 36)
+		} else {
             self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
-        }
-        self.switchButton.center = CGPoint(x: self.view.frame.maxX - 25, y: self.view.frame.minY + 25)
-        self.torchButton.center = CGPoint(x: self.view.frame.minX + 25, y: self.view.frame.minY + 25)
-        /// Use more width, if text has been moved down below the buttons (e.g. notch on iPhone X):
-        let textWidth = self.view.frame.maxX - (minY > 35 ? 20 : 110)
-        self.textPromptView.frame.size = CGSize(width: textWidth, height: 80)
-        self.textPromptView.layoutSubviews()
-        self.textPromptView.center = CGPoint(x: self.view.frame.midX, y: minY + 45)
+
+			self.switchButton.center = CGPoint(x: maxX - 30, y: maxY - 45)
+			self.torchButton.center = CGPoint(x: minX + 30, y: maxY - 45)
+			self.cancelButton.center = CGPoint(x: maxX - 36, y: self.view.frame.minY + 36)
+		}
+		
+		self.textPromptView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height * 0.2 )
+		self.textPromptView.layoutSubviews()
+		
+		self.confidenceView.frame = CGRect(x: 0, y: self.textPromptView.frame.height - 2.0, width: self.view.frame.width, height: 2 )
     }
 
     // swiftlint:disable cyclomatic_complexity

@@ -113,6 +113,13 @@ public final class LuminaViewController: UIViewController {
         _textPromptView = promptView
         return promptView
     }
+	
+	lazy var confidenceView : UIProgressView = {
+		let progressView = UIProgressView(progressViewStyle: .default)
+		progressView.progressTintColor = UIColor.darkGray
+		progressView.isHidden = true
+		return progressView
+	}()
 
     var isUpdating = false
 
@@ -182,7 +189,20 @@ public final class LuminaViewController: UIViewController {
             self.textPromptView.updateText(to: textPrompt)
         }
     }
-
+	open var attributedTextPrompt = NSAttributedString(string: "") {
+		didSet {
+			Log.verbose("Updating text prompt view to: \(attributedTextPrompt.string)")
+			self.textPromptView.updateAttributedText(to: attributedTextPrompt)
+		}
+	}
+	open var confidence:Float = 0.0 {
+		didSet {
+			Log.verbose("Setting confidence view to: \(confidence)")
+			self.confidenceView.isHidden = confidence == 0.0
+			self.confidenceView.setProgress(Float(confidence), animated:true)
+		}
+	}
+	
     /// Set this to choose a resolution for the camera at any time - defaults to highest resolution possible for camera
     ///
     /// - Note: Responds live to being set at any time, and will update automatically

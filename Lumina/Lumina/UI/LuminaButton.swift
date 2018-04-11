@@ -26,8 +26,8 @@ enum SystemButtonType {
 final class LuminaButton: UIButton {
     private var squareSystemButtonWidth = 40
     private var squareSystemButtonHeight = 40
-    private var cancelButtonWidth = 70
-    private var cancelButtonHeight = 30
+    private var cancelButtonWidth = 44
+    private var cancelButtonHeight = 44
     private var shutterButtonDimension = 70
     private var style: SystemButtonType?
     private var border: UIView?
@@ -74,19 +74,35 @@ final class LuminaButton: UIButton {
         switch systemStyle {
         case .torch:
             self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            self.frame = CGRect(origin: CGPoint(x: 10, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
+            self.frame = CGRect(origin: CGPoint(x: 16, y: 126), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
             addButtonShadowEffects()
         case .cameraSwitch:
             self.image = UIImage(named: "cameraSwitch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 50, y: 10), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
+            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 56, y: 16), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
             addButtonShadowEffects()
         case .cancel:
-            self.text = "X"
-            self.frame = CGRect(origin: CGPoint(x: 10, y: UIScreen.main.bounds.maxY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
-            self.titleLabel?.font = UIFont.systemFont(ofSize: 40, weight: .light)
+            self.text = "x"
+			var minY = UIScreen.main.bounds.maxY
+			if #available(iOS 11, *) {
+				minY = self.safeAreaLayoutGuide.layoutFrame.maxY
+			}
+			minY -=  50
+			
+			// Positioning change
+			self.frame = CGRect(origin: CGPoint(x: 10, y: minY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
+			self.layer.cornerRadius = CGFloat(self.cancelButtonWidth) / 2.0
+			self.layer.masksToBounds = true
+			
+			self.backgroundColor = UIColor.black
+			self.alpha = 0.8
+			self.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 6, 0)
+			self.titleLabel?.font = UIFont(name: "AvenirNext-DemiBold", size: 32)
+			
+			self.titleLabel?.textColor = UIColor.white
+			
             self.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
-            self.titleLabel?.layer.shadowOpacity = 1
-            self.titleLabel?.layer.shadowRadius = 6
+            self.titleLabel?.layer.shadowOpacity = 0
+            self.titleLabel?.layer.shadowRadius = 0
         case .shutter:
             self.backgroundColor = UIColor.normalState
             var minY = UIScreen.main.bounds.maxY
@@ -105,8 +121,9 @@ final class LuminaButton: UIButton {
 
     private func addButtonShadowEffects() {
         self.layer.shadowOffset = CGSize(width: 0, height: 0)
-        self.layer.shadowOpacity = 1
-        self.layer.shadowRadius = 6
+		// remove shadow
+		self.layer.shadowOpacity = 0
+        self.layer.shadowRadius = 0
     }
 
     func startRecordingVideo() {
