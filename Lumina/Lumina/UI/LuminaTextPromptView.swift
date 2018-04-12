@@ -11,32 +11,31 @@ import UIKit
 final class LuminaTextPromptView: UIView {
 
     private var textLabel = UILabel()
-	
-	private lazy var blurView : UIVisualEffectView? = {
-		var blurEffect:UIBlurEffect = UIBlurEffect()
-		
+
+	private lazy var blurView: UIVisualEffectView? = {
+		var blurEffect: UIBlurEffect = UIBlurEffect()
+
 		if #available(iOS 10.0, *) { //iOS 10.0 and above
 			blurEffect = UIBlurEffect(style: UIBlurEffectStyle.light)//prominent,regular,extraLight, light, dark
 		} else { //iOS 8.0 and above
 			blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark) //extraLight, light, dark
 		}
-		let bv = UIVisualEffectView(effect: blurEffect)
-		bv.frame = self.frame //your view that have any objects
-		bv.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-		
-		return bv
+		let bView = UIVisualEffectView(effect: blurEffect)
+		bView.frame = self.frame //your view that have any objects
+		bView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+		return bView
 	}()
-	
+
 	static private let animationDuration = 0.3
 
     init() {
         super.init(frame: CGRect.zero)
-		
-		if let bv = self.blurView {
-			self.addSubview(bv)
+
+		if let bView = self.blurView {
+			self.addSubview(bView)
 		}
-		
-	
+
 		self.textLabel = UILabel()
         self.textLabel.backgroundColor = UIColor.clear
 
@@ -45,7 +44,7 @@ final class LuminaTextPromptView: UIView {
 		self.textLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 24)
 		self.textLabel.numberOfLines = 0
 		self.textLabel.lineBreakMode = .byWordWrapping
-		
+
         self.addSubview(textLabel)
 		self.backgroundColor = UIColor.clear
 		self.alpha = 0.0
@@ -56,33 +55,18 @@ final class LuminaTextPromptView: UIView {
             if text.isEmpty {
                 self.hide(andErase: true)
             } else {
-				self.textLabel.attributedText = nil
 				self.textLabel.text = text
                 self.makeAppear()
             }
         }
     }
-	func updateAttributedText(to text: NSAttributedString) {
-		DispatchQueue.main.async {
-			if text.string.isEmpty {
-				self.hide(andErase: true)
-			} else {
-				self.textLabel.text = nil
-				self.textLabel.attributedText = text
-				
-				self.makeAppear()
-			}
-		}
-	}
-
-    func hide(andErase: Bool) {
+	func hide(andErase: Bool) {
         DispatchQueue.main.async {
             UIView.animate(withDuration: LuminaTextPromptView.animationDuration, animations: {
                 self.alpha = 0.0
             }, completion: { _ in
                 if andErase {
                     self.textLabel.text = ""
-					self.textLabel.attributedText = NSAttributedString(string: "")
                 }
             })
         }
@@ -98,7 +82,7 @@ final class LuminaTextPromptView: UIView {
     }
 
     override func layoutSubviews() {
-		let margin:CGFloat = 4.0
+		let margin: CGFloat = 4.0
 		var minY = self.frame.minY
 		if #available(iOS 11, *) {
 			minY = self.safeAreaLayoutGuide.layoutFrame.minY

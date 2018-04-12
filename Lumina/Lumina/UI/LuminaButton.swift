@@ -67,19 +67,13 @@ final class LuminaButton: UIButton {
         super.init(frame: CGRect.zero)
         self.style = systemStyle
         self.backgroundColor = UIColor.clear
-        if let titleLabel = self.titleLabel {
-            titleLabel.textColor = UIColor.white
-            titleLabel.font = UIFont.systemFont(ofSize: 20)
-        }
         switch systemStyle {
         case .torch:
             self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             self.frame = CGRect(origin: CGPoint(x: 16, y: 126), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
-            addButtonShadowEffects()
         case .cameraSwitch:
             self.image = UIImage(named: "cameraSwitch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 56, y: 16), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
-            addButtonShadowEffects()
         case .cancel:
             self.text = "x"
 			var minY = UIScreen.main.bounds.maxY
@@ -87,20 +81,16 @@ final class LuminaButton: UIButton {
 				minY = self.safeAreaLayoutGuide.layoutFrame.maxY
 			}
 			minY -=  50
-			
 			// Positioning change
 			self.frame = CGRect(origin: CGPoint(x: 10, y: minY - 50), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
 			self.layer.cornerRadius = CGFloat(self.cancelButtonWidth) / 2.0
 			self.layer.masksToBounds = true
-			
 			self.backgroundColor = UIColor.black
 			self.alpha = 0.8
-			self.contentEdgeInsets = UIEdgeInsetsMake(0, 0, 6, 0)
+			self.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 6, right: 0)
 			self.titleLabel?.font = UIFont(name: "AvenirNext-DemiBold", size: 32)
-			
 			self.titleLabel?.textColor = UIColor.white
-			
-            self.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
+			self.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
             self.titleLabel?.layer.shadowOpacity = 0
             self.titleLabel?.layer.shadowRadius = 0
         case .shutter:

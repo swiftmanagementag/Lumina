@@ -36,7 +36,7 @@ extension LuminaViewController {
         self.view.addSubview(self.torchButton)
         self.view.addGestureRecognizer(self.zoomRecognizer)
         self.view.addGestureRecognizer(self.focusRecognizer)
-		
+
 		enableUI(valid: false)
     }
 
@@ -62,7 +62,7 @@ extension LuminaViewController {
 
 		var maxY = self.view.frame.maxY
 		var minY = self.view.frame.minY
-		
+
 		var maxX = self.view.frame.maxX
 		var minX = self.view.frame.minX
 
@@ -77,7 +77,7 @@ extension LuminaViewController {
 
 			self.switchButton.center = CGPoint(x: maxX - 45, y: maxY - 90)
 			self.torchButton.center = CGPoint(x: maxX - 45, y: maxY - 30)
-		
+
 			self.cancelButton.center = CGPoint(x: self.view.frame.maxX - 36, y: minY + 36)
 		} else {
             self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
@@ -86,10 +86,10 @@ extension LuminaViewController {
 			self.torchButton.center = CGPoint(x: minX + 30, y: maxY - 45)
 			self.cancelButton.center = CGPoint(x: maxX - 36, y: self.view.frame.minY + 36)
 		}
-		
+
 		self.textPromptView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height * 0.2 )
 		self.textPromptView.layoutSubviews()
-		
+
 		self.confidenceView.frame = CGRect(x: 0, y: self.textPromptView.frame.height - 2.0, width: self.view.frame.width, height: 2 )
     }
 

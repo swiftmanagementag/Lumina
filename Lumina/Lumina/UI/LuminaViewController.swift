@@ -113,8 +113,8 @@ public final class LuminaViewController: UIViewController {
         _textPromptView = promptView
         return promptView
     }
-	
-	lazy var confidenceView : UIProgressView = {
+
+	lazy var confidenceView: UIProgressView = {
 		let progressView = UIProgressView(progressViewStyle: .default)
 		progressView.progressTintColor = UIColor.darkGray
 		progressView.isHidden = true
@@ -143,7 +143,7 @@ public final class LuminaViewController: UIViewController {
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
     ///
-    /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism. 
+    /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism.
     open var recordsVideo = false {
         didSet {
             Log.verbose("Setting video recording mode to \(recordsVideo)")
@@ -189,21 +189,15 @@ public final class LuminaViewController: UIViewController {
             self.textPromptView.updateText(to: textPrompt)
         }
     }
-	open var attributedTextPrompt = NSAttributedString(string: "") {
-		didSet {
-			Log.verbose("Updating text prompt view to: \(attributedTextPrompt.string)")
-			self.textPromptView.updateAttributedText(to: attributedTextPrompt)
-		}
-	}
-	open var confidence:Float = 0.0 {
+	open var confidence: Float = 0.0 {
 		didSet {
 			Log.verbose("Setting confidence view to: \(confidence)")
 			self.confidenceView.isHidden = confidence == 0.0
-			self.confidenceView.setProgress(Float(confidence), animated:true)
+			self.confidenceView.setProgress(Float(confidence), animated: true)
 		}
 	}
-	
-    /// Set this to choose a resolution for the camera at any time - defaults to highest resolution possible for camera
+
+	/// Set this to choose a resolution for the camera at any time - defaults to highest resolution possible for camera
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
     open var resolution: CameraResolution = .highest {
