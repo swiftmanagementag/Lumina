@@ -234,7 +234,7 @@ extension HeliumLogger : Logger {
         let message = formatEntry(type: type, msg: msg, functionName: functionName, lineNum: lineNum, fileName: fileName)
         doPrint(message)
     }
-
+    
     func formatEntry(type: LoggerMessageType, msg: String,
                      functionName: String, lineNum: Int, fileName: String) -> String {
 

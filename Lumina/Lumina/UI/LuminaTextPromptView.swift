@@ -8,6 +8,32 @@
 
 import UIKit
 
+enum LuminaTextError: Error {
+    case fontError
+}
+
+extension UIFont {
+    static func fontsURLs() -> [URL]? {
+        let bundle = Bundle(identifier: "com.okun.io.Lumina")
+        let fileNames = ["IBMPlexSans-SemiBold"]
+        let newNames = fileNames.map({ bundle?.url(forResource: $0, withExtension: "ttf") })
+        return newNames as? [URL]
+    }
+
+    static func register(from url: URL) throws {
+        guard let fontDataProvider = CGDataProvider(url: url as CFURL) else {
+            throw LuminaTextError.fontError
+        }
+        guard let font = CGFont(fontDataProvider) else {
+            throw LuminaTextError.fontError
+        }
+        var error: Unmanaged<CFError>?
+        guard CTFontManagerRegisterGraphicsFont(font, &error) else {
+            throw error!.takeUnretainedValue()
+        }
+    }
+}
+
 final class LuminaTextPromptView: UIView {
 
     private var textLabel = UILabel()
@@ -27,27 +53,46 @@ final class LuminaTextPromptView: UIView {
 		return bView
 	}()
 
-	static private let animationDuration = 0.3
+    static private let animationDuration = 0.3
 
     init() {
         super.init(frame: CGRect.zero)
-
 		if let bView = self.blurView {
 			self.addSubview(bView)
 		}
 
-		self.textLabel = UILabel()
+        self.textLabel = UILabel()
         self.textLabel.backgroundColor = UIColor.clear
 
 		self.textLabel.textColor = UIColor.darkText
         self.textLabel.textAlignment = .center
-		self.textLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 24)
-		self.textLabel.numberOfLines = 0
-		self.textLabel.lineBreakMode = .byWordWrapping
+        /*
+        do {
+            if let fonts = UIFont.fontsURLs() {
+                try fonts.forEach { try UIFont.register(from: $0) }
+            }
+        } catch {
+            Log.debug("Special fonts already registered")
+        }
+        if let font = UIFont(name: "IBM Plex Sans", size: 22) {
+            self.textLabel.font = font
+        } else {
+            self.textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+        }
+        */
+        self.textLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 24)
+	self.textLabel.numberOfLines = 0
+	self.textLabel.lineBreakMode = .byWordWrapping
 
+//        self.textLabel.minimumScaleFactor = 10/UIFont.labelFontSize
+//        self.textLabel.adjustsFontSizeToFitWidth = true
+//        self.textLabel.layer.shadowOffset = CGSize(width: 0, height: 0)
+//        self.textLabel.layer.shadowOpacity = 1
+//        self.textLabel.layer.shadowRadius = 6
         self.addSubview(textLabel)
-		self.backgroundColor = UIColor.clear
-		self.alpha = 0.0
+        self.backgroundColor = UIColor.clear
+        self.alpha = 0.0
+//        self.layer.cornerRadius = 5.0
     }
 
     func updateText(to text: String) {
@@ -55,12 +100,12 @@ final class LuminaTextPromptView: UIView {
             if text.isEmpty {
                 self.hide(andErase: true)
             } else {
-				self.textLabel.text = text
+                self.textLabel.text = text
                 self.makeAppear()
             }
         }
     }
-	func hide(andErase: Bool) {
+    func hide(andErase: Bool) {
         DispatchQueue.main.async {
             UIView.animate(withDuration: LuminaTextPromptView.animationDuration, animations: {
                 self.alpha = 0.0
@@ -74,8 +119,7 @@ final class LuminaTextPromptView: UIView {
 
     private func makeAppear() {
         DispatchQueue.main.async {
-
-			UIView.animate(withDuration: LuminaTextPromptView.animationDuration) {
+            UIView.animate(withDuration: LuminaTextPromptView.animationDuration) {
                 self.alpha = 1
             }
         }

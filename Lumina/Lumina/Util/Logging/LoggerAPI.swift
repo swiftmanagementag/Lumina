@@ -34,7 +34,7 @@ public enum LoggerMessageType: Int {
     case error = 7
     /// Do not log any messages at all
     case none = 8
-
+    
     public static func all() -> [LoggerMessageType] {
         return [LoggerMessageType.entry, LoggerMessageType.exit, LoggerMessageType.debug, LoggerMessageType.verbose, LoggerMessageType.info, LoggerMessageType.warning, LoggerMessageType.error, LoggerMessageType.none]
     }
@@ -68,7 +68,7 @@ extension LoggerMessageType: CustomStringConvertible {
 /// A logger protocol implemented by Logger implementations. This API is used by Kitura
 /// throughout its implementation when logging.
 protocol Logger {
-
+    
     /// Output a logged message.
     ///
     /// - Parameter type: The type of the message (`LoggerMessageType`) being logged.
@@ -80,7 +80,7 @@ protocol Logger {
     ///                      logger API.
     func log(_ type: LoggerMessageType, msg: String,
              functionName: String, lineNum: Int, fileName: String)
-
+    
     /// A function that will indicate if a message with a specified type (`LoggerMessageType`)
     /// will be output in the log (i.e. will not be filtered out).
     ///
@@ -89,16 +89,16 @@ protocol Logger {
     /// - Returns: A Bool indicating whether, if true, or not a message of the specified type
     ///           (`LoggerMessageType`) will be output.
     func isLogging(_ level: LoggerMessageType) -> Bool
-
+    
 }
 
 /// A class of static members used by anyone who wants to log mesages.
 internal class Log {
-
+    
     /// An instance of the logger. It should usually be the one and only reference
     /// of the actual `Logger` protocol implementation in the system.
     internal static var logger: Logger?
-
+    
     /// Log a log message for use when in verbose logging mode.
     ///
     /// - Parameter msg: The message to be logged
@@ -118,7 +118,7 @@ internal class Log {
                         functionName: functionName, lineNum: lineNum, fileName: fileName)
         }
     }
-
+    
     /// Log an informational message.
     ///
     /// - Parameter msg: The message to be logged
@@ -138,7 +138,7 @@ internal class Log {
                         functionName: functionName, lineNum: lineNum, fileName: fileName)
         }
     }
-
+    
     /// Log a warning message.
     ///
     /// - Parameter msg: The message to be logged
@@ -158,7 +158,7 @@ internal class Log {
                         functionName: functionName, lineNum: lineNum, fileName: fileName)
         }
     }
-
+    
     /// Log an error message.
     ///
     /// - Parameter msg: The message to be logged
@@ -178,7 +178,7 @@ internal class Log {
                         functionName: functionName, lineNum: lineNum, fileName: fileName)
         }
     }
-
+    
     /// Log a debuging message.
     ///
     /// - Parameter msg: The message to be logged
@@ -198,7 +198,7 @@ internal class Log {
                         functionName: functionName, lineNum: lineNum, fileName: fileName)
         }
     }
-
+    
     /// Log a message when entering a function.
     ///
     /// - Parameter msg: The message to be logged
@@ -218,7 +218,7 @@ internal class Log {
                        functionName: functionName, lineNum: lineNum, fileName: fileName)
         }
     }
-
+    
     /// Log a message when exiting a function.
     ///
     /// - Parameter msg: The message to be logged
@@ -238,7 +238,7 @@ internal class Log {
                        functionName: functionName, lineNum: lineNum, fileName: fileName)
         }
     }
-
+    
     /// A function that will indicate if a message with a specified type (`LoggerMessageType`)
     /// will be output in the log (i.e. will not be filtered out).
     ///

@@ -1,5 +1,39 @@
 # Change Log
 
+## [1.3.2](https://github.com/dokun1/Lumina/tree/1.3.2) (2018-11-23)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.1...1.3.2)
+
+**Closed issues:**
+
+- Depth data not delivered to captured delegate [\#87](https://github.com/dokun1/Lumina/issues/87)
+- Custom icons [\#86](https://github.com/dokun1/Lumina/issues/86)
+- `streamed` not being called [\#85](https://github.com/dokun1/Lumina/issues/85)
+
+**Merged pull requests:**
+
+- Swift4dot2fixes [\#89](https://github.com/dokun1/Lumina/pull/89) ([dokun1](https://github.com/dokun1))
+
+## [1.3.1](https://github.com/dokun1/Lumina/tree/1.3.1) (2018-06-13)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.0...1.3.1)
+
+**Merged pull requests:**
+
+- New version fixes [\#83](https://github.com/dokun1/Lumina/pull/83) ([dokun1](https://github.com/dokun1))
+- Fixed issue with iPhone platform detection [\#82](https://github.com/dokun1/Lumina/pull/82) ([dokun1](https://github.com/dokun1))
+
+## [1.3.0](https://github.com/dokun1/Lumina/tree/1.3.0) (2018-06-04)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.2.1...1.3.0)
+
+**Closed issues:**
+
+- is there a way to save 3 seconds before and and after detection found? [\#79](https://github.com/dokun1/Lumina/issues/79)
+- Update to IBM Plex Font [\#78](https://github.com/dokun1/Lumina/issues/78)
+- Iphone X support [\#71](https://github.com/dokun1/Lumina/issues/71)
+
+**Merged pull requests:**
+
+- New font plus open [\#81](https://github.com/dokun1/Lumina/pull/81) ([dokun1](https://github.com/dokun1))
+
 ## [1.2.1](https://github.com/dokun1/Lumina/tree/1.2.1) (2018-03-29)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.2.0...1.2.1)
 

@@ -28,16 +28,17 @@ extension LuminaViewController {
     func createUI() {
         Log.verbose("Creating UI")
         self.view.layer.addSublayer(self.previewLayer)
-		self.view.addSubview(self.textPromptView)
-		self.view.addSubview(self.confidenceView)
+        self.view.addSubview(self.textPromptView)
+        self.view.addSubview(self.confidenceView)
 		self.view.addSubview(self.cancelButton)
         self.view.addSubview(self.shutterButton)
         self.view.addSubview(self.switchButton)
         self.view.addSubview(self.torchButton)
-        self.view.addGestureRecognizer(self.zoomRecognizer)
+	
+		self.view.addGestureRecognizer(self.zoomRecognizer)
         self.view.addGestureRecognizer(self.focusRecognizer)
 
-		enableUI(valid: false)
+        enableUI(valid: false)
     }
 
     func enableUI(valid: Bool) {
@@ -59,7 +60,7 @@ extension LuminaViewController {
     }
 
     func updateButtonFrames() {
-
+		
 		var maxY = self.view.frame.maxY
 		var minY = self.view.frame.minY
 
@@ -72,26 +73,25 @@ extension LuminaViewController {
 			minY = self.view.safeAreaLayoutGuide.layoutFrame.minY
 			maxY = self.view.safeAreaLayoutGuide.layoutFrame.maxY
 		}
+		self.cancelButton.center = CGPoint(x: maxX - 38, y: minY + 30)
+		
 		if self.view.frame.width > self.view.frame.height {
-            self.shutterButton.center = CGPoint(x: maxX - 45, y: self.view.frame.midY)
-
+			self.shutterButton.center = CGPoint(x: maxX - 45, y: self.view.frame.midY)
 			self.switchButton.center = CGPoint(x: maxX - 45, y: maxY - 90)
 			self.torchButton.center = CGPoint(x: maxX - 45, y: maxY - 30)
-
-			self.cancelButton.center = CGPoint(x: self.view.frame.maxX - 36, y: minY + 36)
+	//		self.cancelButton.center = CGPoint(x: self.view.frame.maxX - 36, y: minY + 36)
 		} else {
-            self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
-
+			self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
 			self.switchButton.center = CGPoint(x: maxX - 30, y: maxY - 45)
 			self.torchButton.center = CGPoint(x: minX + 30, y: maxY - 45)
-			self.cancelButton.center = CGPoint(x: maxX - 36, y: self.view.frame.minY + 36)
+	//		self.cancelButton.center = CGPoint(x: maxX - 36, y: self.view.frame.minY + 36)
 		}
 
 		self.textPromptView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height * 0.2 )
 		self.textPromptView.layoutSubviews()
 
 		self.confidenceView.frame = CGRect(x: 0, y: self.textPromptView.frame.height - 2.0, width: self.view.frame.width, height: 2 )
-    }
+	}
 
     // swiftlint:disable cyclomatic_complexity
     func handleCameraSetupResult(_ result: CameraSetupResult) {

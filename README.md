@@ -205,10 +205,10 @@ camera.maxZoomScale = 5.0 // not setting this defaults to the highest zoom scale
 
 You must have a `CoreML` compatible model(s) to try this. Ensure that you drag the model file(s) into your project file, and add it to your current application target.
 
-The sample in this repository comes with the `MobileNet` and `SqueezeNet` image recognition models, but again, any `CoreML` compatible model will work with this framework. Assign your model(s) to the framework like so:
+The sample in this repository comes with the `MobileNet` and `SqueezeNet` image recognition models, but again, any `CoreML` compatible model will work with this framework. Assign your model(s) to the framework using the convenient class called `LuminaModel` like so:
 
 ```swift
-camera.streamingModelTypes = [MobileNet(), SqueezeNet()]
+camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
 ```
 
 You are now set up to perform live video object recognition.
@@ -267,7 +267,7 @@ func streamed(depthData: Any, from controller: LuminaViewController) {
 }
 ```
 
-To handle metadata being detected and streamed from the camera, implement:
+To handle metadata being detected and streamed from the camera, implement: 
 
 ```swift
 func detected(metadata: [Any], from controller: LuminaViewController) {
@@ -326,10 +326,10 @@ Per default, all of the buttons are visible.
 
 ## Maintainers
 
-- David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1)
+- David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1) 
 - Richard Littauer [![Twitter Follow](https://img.shields.io/twitter/follow/richlitt.svg?style=social&label=Follow)](https://twitter.com/richlitt) [![GitHub followers](https://img.shields.io/github/followers/RichardLitt.svg?style=social&label=Follow)](https://github.com/RichardLitt)
 - Daniel Conde [![Twitter Follow](https://img.shields.io/twitter/follow/danielconde7.svg?style=social&label=Follow)](https://twitter.com/danielconde7) [![GitHub followers](https://img.shields.io/github/followers/dconde7.svg?style=social&label=Follow)](https://github.com/dconde7)
-- Zach Falgout [![Twitter Follow](https://img.shields.io/twitter/follow/ZFalgout1.svg?style=social&label=Follow)](https://twitter.com/ZFalgout1) [![GitHub followers](https://img.shields.io/github/followers/ZFalgout.svg?style=social&label=Follow)](https://github.com/ZFalgout)
+- Zach Falgout [![Twitter Follow](https://img.shields.io/twitter/follow/ZFalgout1.svg?style=social&label=Follow)](https://twitter.com/ZFalgout1) [![GitHub followers](https://img.shields.io/github/followers/ZFalgout.svg?style=social&label=Follow)](https://github.com/ZFalgout)  
 - Gerriet Backer [![Twitter Follow](https://img.shields.io/twitter/follow/gerriet.svg?style=social&label=Follow)](https://twitter.com/gerriet) [![GitHub followers](https://img.shields.io/github/followers/gerriet.svg?style=social&label=Follow)](https://github.com/gerriet)
 - Greg Heo [![Twitter Follow](https://img.shields.io/twitter/follow/gregheo.svg?style=social&label=Follow)](https://twitter.com/gregheo) [![GitHub followers](https://img.shields.io/github/followers/gregheo.svg?style=social&label=Follow)](https://github.com/gregheo)
 
