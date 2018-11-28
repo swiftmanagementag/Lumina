@@ -16,9 +16,9 @@ final class LuminaTextPromptView: UIView {
 		var blurEffect: UIBlurEffect = UIBlurEffect()
 
 		if #available(iOS 10.0, *) { //iOS 10.0 and above
-			blurEffect = UIBlurEffect(style: UIBlurEffectStyle.light)//prominent,regular,extraLight, light, dark
+			blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)//prominent,regular,extraLight, light, dark
 		} else { //iOS 8.0 and above
-			blurEffect = UIBlurEffect(style: UIBlurEffectStyle.dark) //extraLight, light, dark
+			blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark) //extraLight, light, dark
 		}
 		let bView = UIVisualEffectView(effect: blurEffect)
 		bView.frame = self.frame //your view that have any objects
