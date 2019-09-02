@@ -72,7 +72,7 @@ final class LuminaTextPromptView: UIView {
                 try fonts.forEach { try UIFont.register(from: $0) }
             }
         } catch {
-            Log.debug("Special fonts already registered")
+            LuminaLogger.debug(message: "Special fonts already registered")
         }
         if let font = UIFont(name: "IBM Plex Sans", size: 22) {
             self.textLabel.font = font
@@ -105,6 +105,7 @@ final class LuminaTextPromptView: UIView {
             }
         }
     }
+
     func hide(andErase: Bool) {
         DispatchQueue.main.async {
             UIView.animate(withDuration: LuminaTextPromptView.animationDuration, animations: {

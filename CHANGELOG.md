@@ -1,5 +1,23 @@
 # Change Log
 
+## [1.5.0](https://github.com/dokun1/Lumina/tree/1.5.0) (2019-04-18)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.4.0...1.5.0)
+
+**Implemented enhancements:**
+
+- Using Apple's Swift standard logger [\#93](https://github.com/dokun1/Lumina/pull/93) ([dokun1](https://github.com/dokun1))
+
+## [1.4.0](https://github.com/dokun1/Lumina/tree/1.4.0) (2019-04-05)
+[Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.2...1.4.0)
+
+**Closed issues:**
+
+- Flash [\#90](https://github.com/dokun1/Lumina/issues/90)
+
+**Merged pull requests:**
+
+- Updated to support Swift 5 [\#92](https://github.com/dokun1/Lumina/pull/92) ([dokun1](https://github.com/dokun1))
+
 ## [1.3.2](https://github.com/dokun1/Lumina/tree/1.3.2) (2018-11-23)
 [Full Changelog](https://github.com/dokun1/Lumina/compare/1.3.1...1.3.2)
 

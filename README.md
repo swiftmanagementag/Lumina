@@ -68,9 +68,9 @@ Lumina can:
 
 ## Requirements
 
-- Xcode 8.0+ (by loading Swift 4 Toolchain)
-- iOS 10.0
-- Swift 4.0
+- Xcode 10.0+ (by loading Swift 4 Toolchain)
+- iOS 11.0
+- Swift 5.0
 
 ## Background
 
@@ -91,7 +91,7 @@ Small note: If editing the README, please conform to the [standard-readme](https
 You can use [CocoaPods](https://cocoapods.org) to install `Lumina` by adding it to your `Podfile`:
 
 ```ruby
-platform :ios, '10.0'
+platform :ios, '12.0'
 use_frameworks!
 
 target 'MyApp' do
@@ -120,7 +120,7 @@ let package = Package(
     name: "YOUR_PROJECT_NAME",
     targets: [],
     dependencies: [
-        .Package(url: "https://github.com/dokun1/Lumina.git", majorVersion: 0)
+        .Package(url: "https://github.com/dokun1/Lumina.git", majorVersion: 1)
     ]
 )
 ```
@@ -160,9 +160,9 @@ present(camera, animated: true, completion:nil)
 
 ### Logging
 
-Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger), made by the [Swift@IBM](https://github.com/IBM-Swift) team. The deeper your level of logging, the more you'll see in your console.
+Lumina allows you to set a level of logging for actions happening within the module. The logger in use is [swift-log](https://github.com/apple/swift-log), made by the [Swift Server Working Group](https://github.com/swift-server) team. The deeper your level of logging, the more you'll see in your console.
 
-**NB**: While Lumina is licensed by the MIT license, [HeliumLogger](https://github.com/IBM-Swift/HeliumLogger) is licensed by [Apache 2.0](https://github.com/IBM-Swift/HeliumLogger/blob/master/LICENSE.txt). A copy of the license is also included in the source code.
+**NB**: While Lumina is licensed by the MIT license, [swift-log](https://github.com/apple/swift-log) is licensed by [Apache 2.0](https://github.com/apple/swift-log/blob/master/LICENSE.txt). A copy of the license is also included in the source code.
 
 To set a level of logging, set the static var on `LuminaViewController` like so:
 
@@ -173,13 +173,13 @@ LuminaViewController.loggingLevel = .verbose
 Levels read like so, from least to most logging:
 
 - NONE
-- ERROR
-- WARNING
 - INFO
-- VERBOSE
+- NOTICE
+- WARNING
+- CRITICAL
+- ERROR
 - DEBUG
-- EXIT
-- ENTRY
+- TRACE
 
 ### Functionality
 
@@ -324,6 +324,61 @@ camera.setTorchButton(visible: Bool)
 
 Per default, all of the buttons are visible.
 
+### Adding your own controls outside the camera view
+
+For some UI designs, apps may want to embed `LuminaViewController` within a custom View Controler, adding controls adjacent to the camera view rather than putting all the controls inside the camera view. 
+
+Here is a code snippet that demonstrates adding a torch buttons and controlling the camera zoom level via the externally accessible API:
+```
+class MyCustomViewController: UIViewController {
+    @IBOutlet weak var flashButton: UIButton!
+    @IBOutlet weak var zoomButton: UIButton!
+    var luminaVC: LuminaViewController? //set in prepare(for segue:) via the embed segue in the storyboard
+    var flashState = false
+    var zoomLevel:Float = 2.0
+    let flashOnImage = UIImage(named: "Flash_On") #assumes an image with this name is in your Assets Library
+    let flashOffImage = UIImage(named: "Flash_Off") #assumes an image with this name is in your Assets Library
+
+    override public func viewDidLoad() {
+        super.viewDidLoad()
+
+        luminaVC?.delegate = self
+        luminaVC?.trackMetadata = true
+        luminaVC?.position = .back
+        luminaVC?.setTorchButton(visible: false)
+        luminaVC?.setCancelButton(visible: false)
+        luminaVC?.setSwitchButton(visible: false)
+        luminaVC?.setShutterButton(visible: false)
+        luminaVC?.camera?.torchState = flashState ? .on(intensity: 1.0) : .off
+        luminaVC?.currentZoomScale = zoomLevel
+    }
+
+    override public func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == "Lumina" { #name this segue in storyboard
+            self.luminaVC = segue.destination as? LuminaViewController
+        }
+    }
+
+    @IBAction func flashTapped(_ sender: Any) {
+        flashState = !flashState
+        luminaVC?.camera?.torchState = flashState ? .on(intensity: 1.0) : .off
+        let image = flashState ? flashOnImage : flashOffImage
+        flashButton.setImage(image, for: .normal)
+    }
+
+    @IBAction func zoomTapped(_ sender: Any) {
+        if zoomLevel == 1.0 {
+            zoomLevel = 2.0
+            zoomButton.setTitle("2x", for: .normal)
+        } else {
+            zoomLevel = 1.0
+            zoomButton.setTitle("1x", for: .normal)
+        }
+        luminaVC?.currentZoomScale = zoomLevel
+    }
+
+```
+
 ## Maintainers
 
 - David Okun [![Twitter Follow](https://img.shields.io/twitter/follow/dokun24.svg?style=social&label=Follow)](https://twitter.com/dokun24) [![GitHub followers](https://img.shields.io/github/followers/dokun1.svg?style=social&label=Follow)](https://github.com/dokun1) 
@@ -335,4 +390,4 @@ Per default, all of the buttons are visible.
 
 ## License
 
-[MIT](LICENSE) © 2017 David Okun
+[MIT](LICENSE) © 2019 David Okun

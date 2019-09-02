@@ -12,7 +12,7 @@ import AVFoundation
 @available (iOS 11.0, *)
 extension AVCapturePhoto {
     func normalizedImage(forCameraPosition position: CameraPosition) -> UIImage? {
-        Log.verbose("normalizing image from AVCapturePhoto instance")
+        LuminaLogger.notice(message: "normalizing image from AVCapturePhoto instance")
         guard let cgImage = self.cgImageRepresentation() else {
             return nil
         }
@@ -30,6 +30,8 @@ extension AVCapturePhoto {
         case .portrait:
             return forCamera == .back ? .right : .leftMirrored
         case .unknown:
+            return forCamera == .back ? .right : .leftMirrored
+        @unknown default:
             return forCamera == .back ? .right : .leftMirrored
         }
     }

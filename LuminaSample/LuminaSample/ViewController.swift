@@ -29,7 +29,7 @@ class ViewController: UITableViewController {
     @IBOutlet weak var maxZoomScaleSlider: UISlider!
     
     var selectedResolution: CameraResolution = .high1920x1080
-    var selectedLoggingLevel: LoggerMessageType = .none
+    var selectedLoggingLevel: Logger.Level = .critical
     var depthView: UIImageView?
 }
 
@@ -37,8 +37,7 @@ extension ViewController { //MARK: IBActions
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.resolutionLabel.text = selectedResolution.rawValue
-        self.loggingLevelLabel.text = selectedLoggingLevel.description
+        self.loggingLevelLabel.text = selectedLoggingLevel.uppercasedStringRepresentation
         if let version = LuminaViewController.getVersion() {
             self.title = "Lumina Sample v\(version)"
         } else {
@@ -121,7 +120,7 @@ extension ViewController: LuminaDelegate {
     
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
-            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData, "isPhotoSelfie" : controller.position == .front ? true : false])
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData as Any, "isPhotoSelfie" : controller.position == .front ? true : false])
         }
     }
     
@@ -159,7 +158,7 @@ extension ViewController: LuminaDelegate {
                 newView.contentMode = .scaleAspectFit
                 newView.backgroundColor = UIColor.clear
                 controller.view.addSubview(newView)
-                controller.view.bringSubview(toFront: newView)
+                controller.view.bringSubviewToFront(newView)
             }
         }
     }
@@ -170,7 +169,7 @@ extension ViewController: LuminaDelegate {
 }
 
 extension ViewController: LoggingLevelDelegate {
-    func didSelect(loggingLevel: LoggerMessageType, controller: LoggingViewController) {
+    func didSelect(loggingLevel: Logger.Level, controller: LoggingViewController) {
         selectedLoggingLevel = loggingLevel
         self.navigationController?.popToViewController(self, animated: true)
     }
@@ -194,7 +193,7 @@ extension CVPixelBuffer {
         }
     }
     
-    private func getImageOrientation(with position: CameraPosition) -> UIImageOrientation {
+    private func getImageOrientation(with position: CameraPosition) -> UIImage.Orientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:
             return position == .back ? .down : .upMirrored
@@ -205,6 +204,8 @@ extension CVPixelBuffer {
         case .portrait:
             return position == .back ? .right : .leftMirrored
         case .unknown:
+            return position == .back ? .right : .leftMirrored
+        @unknown default:
             return position == .back ? .right : .leftMirrored
         }
     }
