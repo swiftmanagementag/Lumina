@@ -6,12 +6,12 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 extension LuminaCamera {
     func requestVideoPermissions() {
-        self.sessionQueue.suspend()
+        sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: .video) { success in
             if success {
                 LuminaLogger.notice(message: "successfully enabled video permissions")
@@ -25,7 +25,7 @@ extension LuminaCamera {
     }
 
     func requestAudioPermissions() {
-        self.sessionQueue.suspend()
+        sessionQueue.suspend()
         AVCaptureDevice.requestAccess(for: AVMediaType.audio) { success in
             if success {
                 LuminaLogger.notice(message: "successfully enabled audio permissions")
@@ -39,7 +39,7 @@ extension LuminaCamera {
     }
 
     func updateOutputVideoOrientation(_ orientation: AVCaptureVideoOrientation) {
-        self.videoBufferQueue.async {
+        videoBufferQueue.async {
             for output in self.session.outputs {
                 guard let connection = output.connection(with: AVMediaType.video) else {
                     continue
@@ -53,20 +53,20 @@ extension LuminaCamera {
 
     func restartVideo() {
         LuminaLogger.notice(message: "restarting video feed")
-        if self.session.isRunning {
-            self.stop()
-            updateVideo({ result in
+        if session.isRunning {
+            stop()
+            updateVideo { result in
                 if result == .videoSuccess {
                     self.start()
                 } else {
                     self.delegate?.cameraSetupCompleted(camera: self, result: result)
                 }
-            })
+            }
         }
     }
 
     func updateAudio(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
-        self.sessionQueue.async {
+        sessionQueue.async {
             self.purgeAudioDevices()
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.audio) {
             case .authorized:
@@ -92,7 +92,7 @@ extension LuminaCamera {
     }
 
     func updateVideo(_ completion: @escaping (_ result: CameraSetupResult) -> Void) {
-        self.sessionQueue.async {
+        sessionQueue.async {
             self.purgeVideoDevices()
             switch AVCaptureDevice.authorizationStatus(for: AVMediaType.video) {
             case .authorized:
@@ -110,59 +110,59 @@ extension LuminaCamera {
     }
 
     private func videoSetupApproved() -> CameraSetupResult {
-        self.torchState = .off
-        self.session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
-        guard let videoInput = self.getNewVideoInputDevice() else {
+        torchState = .off
+        session.sessionPreset = .high // set to high here so that device input can be added to session. resolution can be checked for update later
+        guard let videoInput = getNewVideoInputDevice() else {
             return .invalidVideoInput
         }
         if let failureResult = checkSessionValidity(for: videoInput) {
             return failureResult
         }
         self.videoInput = videoInput
-        self.session.addInput(videoInput)
-        if self.streamFrames {
+        session.addInput(videoInput)
+        if streamFrames {
             LuminaLogger.notice(message: "adding video data output to session")
-            self.session.addOutput(self.videoDataOutput)
+            session.addOutput(videoDataOutput)
         }
-        self.session.addOutput(self.photoOutput)
-        self.session.commitConfiguration()
-        if self.session.canSetSessionPreset(self.resolution.foundationPreset()) {
-            LuminaLogger.notice(message: "creating video session with resolution: \(self.resolution.rawValue)")
-            self.session.sessionPreset = self.resolution.foundationPreset()
+        session.addOutput(photoOutput)
+        session.commitConfiguration()
+        if session.canSetSessionPreset(resolution.foundationPreset()) {
+            LuminaLogger.notice(message: "creating video session with resolution: \(resolution.rawValue)")
+            session.sessionPreset = resolution.foundationPreset()
         }
-        configureVideoRecordingOutput(for: self.session)
-        configureMetadataOutput(for: self.session)
-        configureHiResPhotoOutput(for: self.session)
-        configureLivePhotoOutput(for: self.session)
-        configureDepthDataOutput(for: self.session)
+        configureVideoRecordingOutput(for: session)
+        configureMetadataOutput(for: session)
+        configureHiResPhotoOutput(for: session)
+        configureLivePhotoOutput(for: session)
+        configureDepthDataOutput(for: session)
         configureFrameRate()
         return .videoSuccess
     }
 
     private func checkSessionValidity(for input: AVCaptureDeviceInput) -> CameraSetupResult? {
-        guard self.session.canAddInput(input) else {
+        guard session.canAddInput(input) else {
             LuminaLogger.error(message: "cannot add video input")
             return .invalidVideoInput
         }
-        guard self.session.canAddOutput(self.videoDataOutput) else {
+        guard session.canAddOutput(videoDataOutput) else {
             LuminaLogger.error(message: "cannot add video data output")
             return .invalidVideoDataOutput
         }
-        guard self.session.canAddOutput(self.photoOutput) else {
+        guard session.canAddOutput(photoOutput) else {
             LuminaLogger.error(message: "cannot add photo output")
             return .invalidPhotoOutput
         }
-        guard self.session.canAddOutput(self.metadataOutput) else {
+        guard session.canAddOutput(metadataOutput) else {
             LuminaLogger.error(message: "cannot add video metadata output")
             return .invalidVideoMetadataOutput
         }
-        if self.recordsVideo == true {
-            guard self.session.canAddOutput(self.videoFileOutput) else {
+        if recordsVideo == true {
+            guard session.canAddOutput(videoFileOutput) else {
                 LuminaLogger.error(message: "cannot add video file output for recording video")
                 return .invalidVideoFileOutput
             }
         }
-        if #available(iOS 11.0, *), let depthDataOutput = self.depthDataOutput {
+        if #available(iOS 11.0, *), let depthDataOutput = depthDataOutput {
             guard self.session.canAddOutput(depthDataOutput) else {
                 LuminaLogger.error(message: "cannot add depth data output with this settings map")
                 return .invalidDepthDataOutput
@@ -171,12 +171,12 @@ extension LuminaCamera {
         return nil
     }
 
-    private func configureVideoRecordingOutput(for session: AVCaptureSession) {
-        if self.recordsVideo {
+    private func configureVideoRecordingOutput(for _: AVCaptureSession) {
+        if recordsVideo {
             // adding this invalidates the video data output
             LuminaLogger.notice(message: "adding video file output")
-            self.session.addOutput(self.videoFileOutput)
-            if let connection = self.videoFileOutput.connection(with: .video) {
+            session.addOutput(videoFileOutput)
+            if let connection = videoFileOutput.connection(with: .video) {
                 if connection.isVideoStabilizationSupported {
                     connection.preferredVideoStabilizationMode = .auto
                 }
@@ -184,31 +184,31 @@ extension LuminaCamera {
         }
     }
 
-    private func configureHiResPhotoOutput(for session: AVCaptureSession) {
-        if self.captureHighResolutionImages && self.photoOutput.isHighResolutionCaptureEnabled {
+    private func configureHiResPhotoOutput(for _: AVCaptureSession) {
+        if captureHighResolutionImages && photoOutput.isHighResolutionCaptureEnabled {
             LuminaLogger.notice(message: "enabling high resolution photo capture")
-            self.photoOutput.isHighResolutionCaptureEnabled = true
-        } else if self.captureHighResolutionImages {
+            photoOutput.isHighResolutionCaptureEnabled = true
+        } else if captureHighResolutionImages {
             LuminaLogger.error(message: "cannot capture high resolution images with current settings")
-            self.captureHighResolutionImages = false
+            captureHighResolutionImages = false
         }
     }
 
-    private func configureLivePhotoOutput(for session: AVCaptureSession) {
-        if self.captureLivePhotos && self.photoOutput.isLivePhotoCaptureSupported {
+    private func configureLivePhotoOutput(for _: AVCaptureSession) {
+        if captureLivePhotos && photoOutput.isLivePhotoCaptureSupported {
             LuminaLogger.notice(message: "enabling live photo capture")
-            self.photoOutput.isLivePhotoCaptureEnabled = true
-        } else if self.captureLivePhotos {
+            photoOutput.isLivePhotoCaptureEnabled = true
+        } else if captureLivePhotos {
             LuminaLogger.error(message: "cannot capture live photos with current settings")
-            self.captureLivePhotos = false
+            captureLivePhotos = false
         }
     }
 
     private func configureMetadataOutput(for session: AVCaptureSession) {
-        if self.trackMetadata {
+        if trackMetadata {
             LuminaLogger.notice(message: "adding video metadata output")
-            session.addOutput(self.metadataOutput)
-            self.metadataOutput.metadataObjectTypes = self.metadataOutput.availableMetadataObjectTypes
+            session.addOutput(metadataOutput)
+            metadataOutput.metadataObjectTypes = metadataOutput.availableMetadataObjectTypes
         }
     }
 
@@ -223,7 +223,7 @@ extension LuminaCamera {
             }
         } else {
             LuminaLogger.error(message: "cannot capture depth data - must use iOS 11.0 or higher")
-            self.captureDepthData = false
+            captureDepthData = false
         }
         if #available(iOS 11.0, *) {
             if self.streamDepthData, let depthDataOutput = self.depthDataOutput {

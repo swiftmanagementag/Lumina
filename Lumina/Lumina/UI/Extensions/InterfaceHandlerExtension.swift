@@ -6,12 +6,12 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 extension LuminaViewController {
     @objc func handlePinchGestureRecognizer(recognizer: UIPinchGestureRecognizer) {
-        guard self.position == .back else {
+        guard position == .back else {
             return
         }
         currentZoomScale = min(maxZoomScale, max(1.0, beginZoomScale * Float(recognizer.scale)))
@@ -27,16 +27,16 @@ extension LuminaViewController {
 
     func createUI() {
         LuminaLogger.notice(message: "Creating UI")
-        self.view.layer.addSublayer(self.previewLayer)
-        self.view.addSubview(self.textPromptView)
-        self.view.addSubview(self.confidenceView)
-		self.view.addSubview(self.cancelButton)
-        self.view.addSubview(self.shutterButton)
-        self.view.addSubview(self.switchButton)
-        self.view.addSubview(self.torchButton)
-	
-		self.view.addGestureRecognizer(self.zoomRecognizer)
-        self.view.addGestureRecognizer(self.focusRecognizer)
+        view.layer.addSublayer(previewLayer)
+        view.addSubview(textPromptView)
+        view.addSubview(confidenceView)
+        view.addSubview(cancelButton)
+        view.addSubview(shutterButton)
+        view.addSubview(switchButton)
+        view.addSubview(torchButton)
+
+        view.addGestureRecognizer(zoomRecognizer)
+        view.addGestureRecognizer(focusRecognizer)
 
         enableUI(valid: false)
     }
@@ -51,47 +51,46 @@ extension LuminaViewController {
 
     func updateUI(orientation: UIInterfaceOrientation) {
         LuminaLogger.notice(message: "updating UI for orientation: \(orientation.rawValue)")
-        guard let connection = self.previewLayer.connection, connection.isVideoOrientationSupported else {
+        guard let connection = previewLayer.connection, connection.isVideoOrientationSupported else {
             return
         }
-        self.previewLayer.frame = self.view.bounds
+        previewLayer.frame = view.bounds
         connection.videoOrientation = necessaryVideoOrientation(for: orientation)
-        self.camera?.updateOutputVideoOrientation(connection.videoOrientation)
+        camera?.updateOutputVideoOrientation(connection.videoOrientation)
     }
 
     func updateButtonFrames() {
-		
-		var maxY = self.view.frame.maxY
-		var minY = self.view.frame.minY
+        var maxY = view.frame.maxY
+        var minY = view.frame.minY
 
-		var maxX = self.view.frame.maxX
-		var minX = self.view.frame.minX
+        var maxX = view.frame.maxX
+        var minX = view.frame.minX
 
-		if #available(iOS 11, *) {
-			minX = self.view.safeAreaLayoutGuide.layoutFrame.minX
-			maxX = self.view.safeAreaLayoutGuide.layoutFrame.maxX
-			minY = self.view.safeAreaLayoutGuide.layoutFrame.minY
-			maxY = self.view.safeAreaLayoutGuide.layoutFrame.maxY
-		}
-		self.cancelButton.center = CGPoint(x: maxX - 38, y: minY + 30)
-		
-		if self.view.frame.width > self.view.frame.height {
-			self.shutterButton.center = CGPoint(x: maxX - 45, y: self.view.frame.midY)
-			self.switchButton.center = CGPoint(x: maxX - 45, y: maxY - 90)
-			self.torchButton.center = CGPoint(x: maxX - 45, y: maxY - 30)
-	//		self.cancelButton.center = CGPoint(x: self.view.frame.maxX - 36, y: minY + 36)
-		} else {
-			self.shutterButton.center = CGPoint(x: self.view.frame.midX, y: maxY - 45)
-			self.switchButton.center = CGPoint(x: maxX - 30, y: maxY - 45)
-			self.torchButton.center = CGPoint(x: minX + 30, y: maxY - 45)
-	//		self.cancelButton.center = CGPoint(x: maxX - 36, y: self.view.frame.minY + 36)
-		}
+        if #available(iOS 11, *) {
+            minX = self.view.safeAreaLayoutGuide.layoutFrame.minX
+            maxX = self.view.safeAreaLayoutGuide.layoutFrame.maxX
+            minY = self.view.safeAreaLayoutGuide.layoutFrame.minY
+            maxY = self.view.safeAreaLayoutGuide.layoutFrame.maxY
+        }
+        cancelButton.center = CGPoint(x: maxX - 38, y: minY + 30)
 
-		self.textPromptView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height * 0.2 )
-		self.textPromptView.layoutSubviews()
+        if view.frame.width > view.frame.height {
+            shutterButton.center = CGPoint(x: maxX - 45, y: view.frame.midY)
+            switchButton.center = CGPoint(x: maxX - 45, y: maxY - 90)
+            torchButton.center = CGPoint(x: maxX - 45, y: maxY - 30)
+            //		self.cancelButton.center = CGPoint(x: self.view.frame.maxX - 36, y: minY + 36)
+        } else {
+            shutterButton.center = CGPoint(x: view.frame.midX, y: maxY - 45)
+            switchButton.center = CGPoint(x: maxX - 30, y: maxY - 45)
+            torchButton.center = CGPoint(x: minX + 30, y: maxY - 45)
+            //		self.cancelButton.center = CGPoint(x: maxX - 36, y: self.view.frame.minY + 36)
+        }
 
-		self.confidenceView.frame = CGRect(x: 0, y: self.textPromptView.frame.height - 2.0, width: self.view.frame.width, height: 2 )
-	}
+        textPromptView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height * 0.2)
+        textPromptView.layoutSubviews()
+
+        confidenceView.frame = CGRect(x: 0, y: textPromptView.frame.height - 2.0, width: view.frame.width, height: 2)
+    }
 
     // swiftlint:disable cyclomatic_complexity
     func handleCameraSetupResult(_ result: CameraSetupResult) {
@@ -107,9 +106,9 @@ extension LuminaViewController {
             case .audioSuccess:
                 break
             case .requiresUpdate:
-                self.camera?.updateVideo({ result in
+                self.camera?.updateVideo { result in
                     self.handleCameraSetupResult(result)
-                })
+                }
             case .videoPermissionDenied:
                 self.textPrompt = "Camera permissions for Lumina have been previously denied - please access your privacy settings to change this."
             case .videoPermissionRestricted:

@@ -6,78 +6,77 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import UIKit
-import Lumina
-import CoreML
 import AVKit
+import CoreML
+import Lumina
+import UIKit
 
 class ViewController: UITableViewController {
-    @IBOutlet weak var frontCameraSwitch: UISwitch!
-    @IBOutlet weak var recordsVideoSwitch: UISwitch!
-    @IBOutlet weak var trackImagesSwitch: UISwitch!
-    @IBOutlet weak var trackMetadataSwitch: UISwitch!
-    @IBOutlet weak var capturesLivePhotosSwitch: UISwitch!
-    @IBOutlet weak var capturesDepthDataSwitch: UISwitch!
-    @IBOutlet weak var streamsDepthDataSwitch: UISwitch!
-    @IBOutlet weak var showTextPromptViewSwitch: UISwitch!
-    @IBOutlet weak var frameRateLabel: UILabel!
-    @IBOutlet weak var frameRateSlider: UISlider!
-    @IBOutlet weak var useCoreMLModelSwitch: UISwitch!
-    @IBOutlet weak var resolutionLabel: UILabel!
-    @IBOutlet weak var loggingLevelLabel: UILabel!
-    @IBOutlet weak var maxZoomScaleLabel: UILabel!
-    @IBOutlet weak var maxZoomScaleSlider: UISlider!
-    
+    @IBOutlet var frontCameraSwitch: UISwitch!
+    @IBOutlet var recordsVideoSwitch: UISwitch!
+    @IBOutlet var trackImagesSwitch: UISwitch!
+    @IBOutlet var trackMetadataSwitch: UISwitch!
+    @IBOutlet var capturesLivePhotosSwitch: UISwitch!
+    @IBOutlet var capturesDepthDataSwitch: UISwitch!
+    @IBOutlet var streamsDepthDataSwitch: UISwitch!
+    @IBOutlet var showTextPromptViewSwitch: UISwitch!
+    @IBOutlet var frameRateLabel: UILabel!
+    @IBOutlet var frameRateSlider: UISlider!
+    @IBOutlet var useCoreMLModelSwitch: UISwitch!
+    @IBOutlet var resolutionLabel: UILabel!
+    @IBOutlet var loggingLevelLabel: UILabel!
+    @IBOutlet var maxZoomScaleLabel: UILabel!
+    @IBOutlet var maxZoomScaleSlider: UISlider!
+
     var selectedResolution: CameraResolution = .high1920x1080
     var selectedLoggingLevel: Logger.Level = .critical
     var depthView: UIImageView?
 }
 
-extension ViewController { //MARK: IBActions
-    
+extension ViewController { // MARK: IBActions
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.loggingLevelLabel.text = selectedLoggingLevel.uppercasedStringRepresentation
+        loggingLevelLabel.text = selectedLoggingLevel.uppercasedStringRepresentation
         if let version = LuminaViewController.getVersion() {
-            self.title = "Lumina Sample v\(version)"
+            title = "Lumina Sample v\(version)"
         } else {
-            self.title  = "Lumina Sample"
+            title = "Lumina Sample"
         }
     }
-    
+
     @IBAction func cameraButtonTapped() {
         LuminaViewController.loggingLevel = selectedLoggingLevel
         let camera = LuminaViewController()
         camera.delegate = self
-        camera.position = self.frontCameraSwitch.isOn ? .front : .back
-        camera.recordsVideo = self.recordsVideoSwitch.isOn
-        camera.streamFrames = self.trackImagesSwitch.isOn
-        camera.textPrompt = self.showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
-        camera.trackMetadata = self.trackMetadataSwitch.isOn
-        camera.captureLivePhotos = self.capturesLivePhotosSwitch.isOn
-        camera.captureDepthData = self.capturesDepthDataSwitch.isOn
-        camera.streamDepthData = self.streamsDepthDataSwitch.isOn
+        camera.position = frontCameraSwitch.isOn ? .front : .back
+        camera.recordsVideo = recordsVideoSwitch.isOn
+        camera.streamFrames = trackImagesSwitch.isOn
+        camera.textPrompt = showTextPromptViewSwitch.isOn ? "This is how to test the text prompt view" : ""
+        camera.trackMetadata = trackMetadataSwitch.isOn
+        camera.captureLivePhotos = capturesLivePhotosSwitch.isOn
+        camera.captureDepthData = capturesDepthDataSwitch.isOn
+        camera.streamDepthData = streamsDepthDataSwitch.isOn
         camera.resolution = selectedResolution
-        camera.maxZoomScale = (self.maxZoomScaleLabel.text! as NSString).floatValue
-        camera.frameRate = Int(self.frameRateLabel.text!) ?? 30
-        if #available(iOS 11.0, *), self.useCoreMLModelSwitch.isOn {
+        camera.maxZoomScale = (maxZoomScaleLabel.text! as NSString).floatValue
+        camera.frameRate = Int(frameRateLabel.text!) ?? 30
+        if #available(iOS 11.0, *), useCoreMLModelSwitch.isOn {
             camera.streamingModels = [LuminaModel(model: MobileNet().model, type: "MobileNet"), LuminaModel(model: SqueezeNet().model, type: "SqueezeNet")]
         }
         present(camera, animated: true, completion: nil)
     }
-    
+
     @IBAction func frameRateSliderChanged() {
         frameRateLabel.text = String(Int(frameRateSlider.value))
     }
-    
+
     @IBAction func zoomScaleSliderChanged() {
         maxZoomScaleLabel.text = String(format: "%.01f", maxZoomScaleSlider.value)
     }
-    
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "stillImageOutputSegue" {
             let controller = segue.destination as! ImageViewController
-            if let map = sender as? [String : Any] {
+            if let map = sender as? [String: Any] {
                 controller.image = map["stillImage"] as? UIImage
                 controller.livePhotoURL = map["livePhotoURL"] as? URL
                 if #available(iOS 11.0, *) {
@@ -97,7 +96,7 @@ extension ViewController { //MARK: IBActions
 }
 
 extension ViewController: LuminaDelegate {
-    func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController) {
+    func streamed(videoFrame _: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController) {
         if #available(iOS 11.0, *) {
             guard let predicted = predictions else {
                 return
@@ -117,13 +116,13 @@ extension ViewController: LuminaDelegate {
             print("CoreML not available in iOS 10.0")
         }
     }
-    
+
     func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
-            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage" : stillImage, "livePhotoURL" : livePhotoAt as Any, "depthData" : depthData as Any, "isPhotoSelfie" : controller.position == .front ? true : false])
+            self.performSegue(withIdentifier: "stillImageOutputSegue", sender: ["stillImage": stillImage, "livePhotoURL": livePhotoAt as Any, "depthData": depthData as Any, "isPhotoSelfie": controller.position == .front ? true : false])
         }
     }
-    
+
     func captured(videoAt: URL, from controller: LuminaViewController) {
         controller.dismiss(animated: true) {
             let player = AVPlayer(url: videoAt)
@@ -134,15 +133,15 @@ extension ViewController: LuminaDelegate {
             }
         }
     }
-    
-    func detected(metadata: [Any], from controller: LuminaViewController) {
+
+    func detected(metadata: [Any], from _: LuminaViewController) {
         print(metadata)
     }
-    
-    func streamed(videoFrame: UIImage, from controller: LuminaViewController) {
+
+    func streamed(videoFrame _: UIImage, from _: LuminaViewController) {
         print("video frame received")
     }
-    
+
     func streamed(depthData: Any, from controller: LuminaViewController) {
         if #available(iOS 11.0, *) {
             if let data = depthData as? AVDepthData {
@@ -162,23 +161,23 @@ extension ViewController: LuminaDelegate {
             }
         }
     }
-    
+
     func dismissed(controller: LuminaViewController) {
         controller.dismiss(animated: true, completion: nil)
     }
 }
 
 extension ViewController: LoggingLevelDelegate {
-    func didSelect(loggingLevel: Logger.Level, controller: LoggingViewController) {
+    func didSelect(loggingLevel: Logger.Level, controller _: LoggingViewController) {
         selectedLoggingLevel = loggingLevel
-        self.navigationController?.popToViewController(self, animated: true)
+        navigationController?.popToViewController(self, animated: true)
     }
 }
 
 extension ViewController: ResolutionDelegate {
-    func didSelect(resolution: CameraResolution, controller: ResolutionViewController) {
+    func didSelect(resolution: CameraResolution, controller _: ResolutionViewController) {
         selectedResolution = resolution
-        self.navigationController?.popToViewController(self, animated: true)
+        navigationController?.popToViewController(self, animated: true)
     }
 }
 
@@ -187,12 +186,12 @@ extension CVPixelBuffer {
         let ciImage = CIImage(cvPixelBuffer: self)
         let context = CIContext(options: nil)
         if let cgImage = context.createCGImage(ciImage, from: CGRect(x: 0, y: 0, width: CVPixelBufferGetWidth(self), height: CVPixelBufferGetHeight(self))) {
-            return UIImage(cgImage: cgImage , scale: 1.0, orientation: getImageOrientation(with: position))
+            return UIImage(cgImage: cgImage, scale: 1.0, orientation: getImageOrientation(with: position))
         } else {
             return nil
         }
     }
-    
+
     private func getImageOrientation(with position: CameraPosition) -> UIImage.Orientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:

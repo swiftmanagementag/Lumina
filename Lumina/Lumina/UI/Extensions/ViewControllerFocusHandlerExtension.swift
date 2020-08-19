@@ -10,13 +10,13 @@ import Foundation
 
 extension LuminaViewController {
     func focusCamera(at point: CGPoint) {
-        if self.isUpdating == true {
+        if isUpdating == true {
             return
         } else {
-            self.isUpdating = true
+            isUpdating = true
         }
-        let focusX = point.x/UIScreen.main.bounds.size.width
-        let focusY = point.y/UIScreen.main.bounds.size.height
+        let focusX = point.x / UIScreen.main.bounds.size.width
+        let focusY = point.y / UIScreen.main.bounds.size.height
         guard let camera = self.camera else {
             return
         }
@@ -36,7 +36,7 @@ extension LuminaViewController {
         focusView.transform = CGAffineTransform(scaleX: 1.7, y: 1.7)
         focusView.center = point
         focusView.alpha = 0.0
-        self.view.addSubview(focusView)
+        view.addSubview(focusView)
         UIView.animate(withDuration: 0.3, animations: {
             focusView.alpha = 1.0
             focusView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)

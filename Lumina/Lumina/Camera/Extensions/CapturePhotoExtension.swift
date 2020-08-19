@@ -6,20 +6,20 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
-@available (iOS 11.0, *)
+@available(iOS 11.0, *)
 extension AVCapturePhoto {
     func normalizedImage(forCameraPosition position: CameraPosition) -> UIImage? {
         LuminaLogger.notice(message: "normalizing image from AVCapturePhoto instance")
-        guard let cgImage = self.cgImageRepresentation() else {
+        guard let cgImage = cgImageRepresentation() else {
             return nil
         }
         return UIImage(cgImage: cgImage.takeUnretainedValue(), scale: 1.0, orientation: getImageOrientation(forCamera: position))
     }
 
-	private func getImageOrientation(forCamera: CameraPosition) -> UIImage.Orientation {
+    private func getImageOrientation(forCamera: CameraPosition) -> UIImage.Orientation {
         switch UIApplication.shared.statusBarOrientation {
         case .landscapeLeft:
             return forCamera == .back ? .down : .upMirrored

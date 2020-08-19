@@ -16,7 +16,7 @@ extension UIFont {
     static func fontsURLs() -> [URL]? {
         let bundle = Bundle(identifier: "com.okun.io.Lumina")
         let fileNames = ["IBMPlexSans-SemiBold"]
-        let newNames = fileNames.map({ bundle?.url(forResource: $0, withExtension: "ttf") })
+        let newNames = fileNames.map { bundle?.url(forResource: $0, withExtension: "ttf") }
         return newNames as? [URL]
     }
 
@@ -35,63 +35,62 @@ extension UIFont {
 }
 
 final class LuminaTextPromptView: UIView {
-
     private var textLabel = UILabel()
 
-	private lazy var blurView: UIVisualEffectView? = {
-		var blurEffect: UIBlurEffect = UIBlurEffect()
+    private lazy var blurView: UIVisualEffectView? = {
+        var blurEffect: UIBlurEffect = UIBlurEffect()
 
-		if #available(iOS 10.0, *) { //iOS 10.0 and above
-			blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light)//prominent,regular,extraLight, light, dark
-		} else { //iOS 8.0 and above
-			blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark) //extraLight, light, dark
-		}
-		let bView = UIVisualEffectView(effect: blurEffect)
-		bView.frame = self.frame //your view that have any objects
-		bView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        if #available(iOS 10.0, *) { // iOS 10.0 and above
+            blurEffect = UIBlurEffect(style: UIBlurEffect.Style.light) // prominent,regular,extraLight, light, dark
+        } else { // iOS 8.0 and above
+            blurEffect = UIBlurEffect(style: UIBlurEffect.Style.dark) // extraLight, light, dark
+        }
+        let bView = UIVisualEffectView(effect: blurEffect)
+        bView.frame = self.frame // your view that have any objects
+        bView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
-		return bView
-	}()
+        return bView
+    }()
 
-    static private let animationDuration = 0.3
+    private static let animationDuration = 0.3
 
     init() {
         super.init(frame: CGRect.zero)
-		if let bView = self.blurView {
-			self.addSubview(bView)
-		}
+        if let bView = blurView {
+            addSubview(bView)
+        }
 
-        self.textLabel = UILabel()
-        self.textLabel.backgroundColor = UIColor.clear
+        textLabel = UILabel()
+        textLabel.backgroundColor = UIColor.clear
 
-		self.textLabel.textColor = UIColor.darkText
-        self.textLabel.textAlignment = .center
+        textLabel.textColor = UIColor.darkText
+        textLabel.textAlignment = .center
         /*
-        do {
-            if let fonts = UIFont.fontsURLs() {
-                try fonts.forEach { try UIFont.register(from: $0) }
-            }
-        } catch {
-            LuminaLogger.debug(message: "Special fonts already registered")
-        }
-        if let font = UIFont(name: "IBM Plex Sans", size: 22) {
-            self.textLabel.font = font
-        } else {
-            self.textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-        }
-        */
-        self.textLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 24)
-	self.textLabel.numberOfLines = 0
-	self.textLabel.lineBreakMode = .byWordWrapping
+         do {
+             if let fonts = UIFont.fontsURLs() {
+                 try fonts.forEach { try UIFont.register(from: $0) }
+             }
+         } catch {
+             LuminaLogger.debug(message: "Special fonts already registered")
+         }
+         if let font = UIFont(name: "IBM Plex Sans", size: 22) {
+             self.textLabel.font = font
+         } else {
+             self.textLabel.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+         }
+         */
+        textLabel.font = UIFont(name: "AvenirNext-DemiBold", size: 24)
+        textLabel.numberOfLines = 0
+        textLabel.lineBreakMode = .byWordWrapping
 
 //        self.textLabel.minimumScaleFactor = 10/UIFont.labelFontSize
 //        self.textLabel.adjustsFontSizeToFitWidth = true
 //        self.textLabel.layer.shadowOffset = CGSize(width: 0, height: 0)
 //        self.textLabel.layer.shadowOpacity = 1
 //        self.textLabel.layer.shadowRadius = 6
-        self.addSubview(textLabel)
-        self.backgroundColor = UIColor.clear
-        self.alpha = 0.0
+        addSubview(textLabel)
+        backgroundColor = UIColor.clear
+        alpha = 0.0
 //        self.layer.cornerRadius = 5.0
     }
 
@@ -127,15 +126,15 @@ final class LuminaTextPromptView: UIView {
     }
 
     override func layoutSubviews() {
-		let margin: CGFloat = 4.0
-		var minY = self.frame.minY
-		if #available(iOS 11, *) {
-			minY = self.safeAreaLayoutGuide.layoutFrame.minY
-		}
-        self.textLabel.frame = CGRect(origin: CGPoint(x: margin, y: minY + margin), size: CGSize(width: frame.width - 2 * margin, height: frame.height - 2 * margin - minY))
+        let margin: CGFloat = 4.0
+        var minY = frame.minY
+        if #available(iOS 11, *) {
+            minY = self.safeAreaLayoutGuide.layoutFrame.minY
+        }
+        textLabel.frame = CGRect(origin: CGPoint(x: margin, y: minY + margin), size: CGSize(width: frame.width - 2 * margin, height: frame.height - 2 * margin - minY))
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required init?(coder _: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

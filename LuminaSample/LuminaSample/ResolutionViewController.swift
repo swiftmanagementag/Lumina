@@ -6,10 +6,10 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import UIKit
 import Lumina
+import UIKit
 
-protocol ResolutionDelegate: class {
+protocol ResolutionDelegate: AnyObject {
     func didSelect(resolution: CameraResolution, controller: ResolutionViewController)
 }
 
@@ -18,11 +18,11 @@ class ResolutionViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in _: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_: UITableView, numberOfRowsInSection _: Int) -> Int {
         return CameraResolution.all().count
     }
 
@@ -34,8 +34,8 @@ class ResolutionViewController: UITableViewController {
         textLabel.text = CameraResolution.all()[indexPath.row].rawValue
         return cell
     }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+    override func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedResolution = CameraResolution.all()[indexPath.row]
         delegate?.didSelect(resolution: selectedResolution, controller: self)
     }

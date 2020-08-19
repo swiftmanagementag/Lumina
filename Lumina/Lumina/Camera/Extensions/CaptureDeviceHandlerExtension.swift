@@ -6,13 +6,13 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 extension LuminaCamera {
     func getNewVideoInputDevice() -> AVCaptureDeviceInput? {
         do {
-            guard let device = getDevice(with: self.position == .front ? AVCaptureDevice.Position.front : AVCaptureDevice.Position.back) else {
+            guard let device = getDevice(with: position == .front ? AVCaptureDevice.Position.front : AVCaptureDevice.Position.back) else {
                 LuminaLogger.error(message: "could not find valid AVCaptureDevice")
                 return nil
             }
@@ -37,22 +37,22 @@ extension LuminaCamera {
 
     func purgeAudioDevices() {
         LuminaLogger.notice(message: "purging old audio devices on capture session")
-        for oldInput in self.session.inputs where oldInput == self.audioInput {
+        for oldInput in session.inputs where oldInput == audioInput {
             self.session.removeInput(oldInput)
         }
     }
 
     func purgeVideoDevices() {
         LuminaLogger.notice(message: "purging old video devices on capture session")
-        for oldInput in self.session.inputs where oldInput == self.videoInput {
+        for oldInput in session.inputs where oldInput == videoInput {
             self.session.removeInput(oldInput)
         }
-        for oldOutput in self.session.outputs {
-            if oldOutput == self.videoDataOutput || oldOutput == self.photoOutput || oldOutput == self.metadataOutput || oldOutput == self.videoFileOutput {
-                self.session.removeOutput(oldOutput)
+        for oldOutput in session.outputs {
+            if oldOutput == videoDataOutput || oldOutput == photoOutput || oldOutput == metadataOutput || oldOutput == videoFileOutput {
+                session.removeOutput(oldOutput)
             }
             if let dataOutput = oldOutput as? AVCaptureVideoDataOutput {
-                self.session.removeOutput(dataOutput)
+                session.removeOutput(dataOutput)
             }
             if #available(iOS 11.0, *) {
                 if let depthOutput = oldOutput as? AVCaptureDepthDataOutput {
@@ -75,14 +75,14 @@ extension LuminaCamera {
             self.currentCaptureDevice = device
             return device
         } else if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position) {
-            self.currentCaptureDevice = device
+            currentCaptureDevice = device
             return device
         }
         return nil
     }
 
     func configureFrameRate() {
-        guard let device = self.currentCaptureDevice else {
+        guard let device = currentCaptureDevice else {
             return
         }
         for vFormat in device.formats {
@@ -91,16 +91,17 @@ extension LuminaCamera {
             guard let frameRate = ranges.first else {
                 continue
             }
-            if frameRate.maxFrameRate >= Float64(self.frameRate) &&
-                frameRate.minFrameRate <= Float64(self.frameRate) &&
-                self.resolution.getDimensions().width == dimensions.width &&
-                self.resolution.getDimensions().height == dimensions.height &&
-                CMFormatDescriptionGetMediaSubType(vFormat.formatDescription) == 875704422 { // meant for full range 420f
+            if frameRate.maxFrameRate >= Float64(self.frameRate),
+                frameRate.minFrameRate <= Float64(self.frameRate),
+                resolution.getDimensions().width == dimensions.width,
+                resolution.getDimensions().height == dimensions.height,
+                CMFormatDescriptionGetMediaSubType(vFormat.formatDescription) == 875_704_422
+            { // meant for full range 420f
                 do {
                     try device.lockForConfiguration()
                     device.activeFormat = vFormat as AVCaptureDevice.Format
-					device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(self.frameRate))
-					device.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(self.frameRate))
+                    device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(self.frameRate))
+                    device.activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(self.frameRate))
                     device.unlockForConfiguration()
                     break
                 } catch {
@@ -111,7 +112,7 @@ extension LuminaCamera {
     }
 
     func updateZoom() {
-        guard let input = self.videoInput else {
+        guard let input = videoInput else {
             return
         }
         let device = input.device

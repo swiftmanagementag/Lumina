@@ -6,13 +6,13 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 extension LuminaCamera: AVCaptureMetadataOutputObjectsDelegate {
-    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    func metadataOutput(_: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from _: AVCaptureConnection) {
         LuminaLogger.notice(message: "metadata detected - \(metadataObjects)")
-        guard case self.trackMetadata = true else {
+        guard case trackMetadata = true else {
             return
         }
         DispatchQueue.main.async {

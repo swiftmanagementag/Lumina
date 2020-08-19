@@ -55,12 +55,12 @@ extension LuminaViewController {
 
     @objc func switchButtonTapped() {
         LuminaLogger.notice(message: "camera switch button tapped")
-        switch self.position {
+        switch position {
         case .back:
-            self.position = .front
+            position = .front
             torchButtonTapped()
         default:
-            self.position = .back
+            position = .back
         }
     }
 
@@ -77,8 +77,8 @@ extension LuminaViewController {
             LuminaLogger.notice(message: "torch mode should be set to on")
             camera.torchState = .on(intensity: 1.0)
             self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.on)
-        //swiftlint:disable empty_enum_arguments
-        case .on(_):
+        // swiftlint:disable empty_enum_arguments
+        case .on:
             LuminaLogger.notice(message: "torch mode should be set to auto")
             camera.torchState = .auto
             self.torchButton.updateTorchIcon(to: SystemButtonType.FlashState.auto)

@@ -56,12 +56,13 @@ extension Logger {
     public func log(level: Logger.Level,
                     _ message: @autoclosure () -> Logger.Message,
                     metadata: @autoclosure () -> Logger.Metadata? = nil,
-                    file: String = #file, function: String = #function, line: UInt = #line) {
-        if self.logLevel <= level {
-            self.handler.log(level: level,
-                             message: message(),
-                             metadata: metadata(),
-                             file: file, function: function, line: line)
+                    file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        if logLevel <= level {
+            handler.log(level: level,
+                        message: message(),
+                        metadata: metadata(),
+                        file: file, function: function, line: line)
         }
     }
 
@@ -72,10 +73,10 @@ extension Logger {
     @inlinable
     public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
         get {
-            return self.handler[metadataKey: metadataKey]
+            return handler[metadataKey: metadataKey]
         }
         set {
-            self.handler[metadataKey: metadataKey] = newValue
+            handler[metadataKey: metadataKey] = newValue
         }
     }
 
@@ -88,10 +89,10 @@ extension Logger {
     @inlinable
     public var logLevel: Logger.Level {
         get {
-            return self.handler.logLevel
+            return handler.logLevel
         }
         set {
-            self.handler.logLevel = newValue
+            handler.logLevel = newValue
         }
     }
 }
@@ -115,8 +116,9 @@ extension Logger {
     @inlinable
     public func trace(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .trace, message(), metadata: metadata(), file: file, function: function, line: line)
+                      file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        log(level: .trace, message(), metadata: metadata(), file: file, function: function, line: line)
     }
 
     /// Log a message passing with the `Logger.info` log level.
@@ -137,8 +139,9 @@ extension Logger {
     @inlinable
     public func debug(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .debug, message(), metadata: metadata(), file: file, function: function, line: line)
+                      file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        log(level: .debug, message(), metadata: metadata(), file: file, function: function, line: line)
     }
 
     /// Log a message passing with the `Logger.Level.info` log level.
@@ -159,8 +162,9 @@ extension Logger {
     @inlinable
     public func info(_ message: @autoclosure () -> Logger.Message,
                      metadata: @autoclosure () -> Logger.Metadata? = nil,
-                     file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .info, message(), metadata: metadata(), file: file, function: function, line: line)
+                     file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        log(level: .info, message(), metadata: metadata(), file: file, function: function, line: line)
     }
 
     /// Log a message passing with the `Logger.Level.notice` log level.
@@ -181,8 +185,9 @@ extension Logger {
     @inlinable
     public func notice(_ message: @autoclosure () -> Logger.Message,
                        metadata: @autoclosure () -> Logger.Metadata? = nil,
-                       file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .notice, message(), metadata: metadata(), file: file, function: function, line: line)
+                       file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        log(level: .notice, message(), metadata: metadata(), file: file, function: function, line: line)
     }
 
     /// Log a message passing with the `Logger.Level.warning` log level.
@@ -203,8 +208,9 @@ extension Logger {
     @inlinable
     public func warning(_ message: @autoclosure () -> Logger.Message,
                         metadata: @autoclosure () -> Logger.Metadata? = nil,
-                        file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .warning, message(), metadata: metadata(), file: file, function: function, line: line)
+                        file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        log(level: .warning, message(), metadata: metadata(), file: file, function: function, line: line)
     }
 
     /// Log a message passing with the `Logger.Level.error` log level.
@@ -225,8 +231,9 @@ extension Logger {
     @inlinable
     public func error(_ message: @autoclosure () -> Logger.Message,
                       metadata: @autoclosure () -> Logger.Metadata? = nil,
-                      file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .error, message(), metadata: metadata(), file: file, function: function, line: line)
+                      file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        log(level: .error, message(), metadata: metadata(), file: file, function: function, line: line)
     }
 
     /// Log a message passing with the `Logger.Level.critical` log level.
@@ -246,8 +253,9 @@ extension Logger {
     @inlinable
     public func critical(_ message: @autoclosure () -> Logger.Message,
                          metadata: @autoclosure () -> Logger.Metadata? = nil,
-                         file: String = #file, function: String = #function, line: UInt = #line) {
-        self.log(level: .critical, message(), metadata: metadata(), file: file, function: function, line: line)
+                         file: String = #file, function: String = #function, line: UInt = #line)
+    {
+        log(level: .critical, message(), metadata: metadata(), file: file, function: function, line: line)
     }
 }
 
@@ -275,7 +283,7 @@ public enum LoggingSystem {
 
     // for our testing we want to allow multiple bootstraping
     internal static func bootstrapInternal(_ factory: @escaping (String) -> LogHandler) {
-        self.lock.withWriterLock {
+        lock.withWriterLock {
             self.factory = factory
         }
     }
@@ -396,13 +404,13 @@ extension Logger.Level: Comparable {
 extension Logger.MetadataValue: Equatable {
     public static func == (lhs: Logger.Metadata.Value, rhs: Logger.Metadata.Value) -> Bool {
         switch (lhs, rhs) {
-        case (.string(let lhs), .string(let rhs)):
+        case let (.string(lhs), .string(rhs)):
             return lhs == rhs
-        case (.stringConvertible(let lhs), .stringConvertible(let rhs)):
+        case let (.stringConvertible(lhs), .stringConvertible(rhs)):
             return lhs.description == rhs.description
-        case (.array(let lhs), .array(let rhs)):
+        case let (.array(lhs), .array(rhs)):
             return lhs == rhs
-        case (.dictionary(let lhs), .dictionary(let rhs)):
+        case let (.dictionary(lhs), .dictionary(rhs)):
             return lhs == rhs
         default:
             return false
@@ -423,9 +431,10 @@ extension Logger {
     ///     logger.info("Hello \(world)")
     ///
     public struct Message: ExpressibleByStringLiteral,
-                           Equatable,
-                           CustomStringConvertible,
-                           ExpressibleByStringInterpolation {
+        Equatable,
+        CustomStringConvertible,
+        ExpressibleByStringInterpolation
+    {
         public typealias StringLiteralType = String
 
         private var value: String
@@ -435,7 +444,7 @@ extension Logger {
         }
 
         public var description: String {
-            return self.value
+            return value
         }
     }
 }
@@ -455,10 +464,10 @@ public struct MultiplexLogHandler: LogHandler {
 
     public var logLevel: Logger.Level {
         get {
-            return self.handlers[0].logLevel
+            return handlers[0].logLevel
         }
         set {
-            self.mutatingForEachHandler {
+            mutatingForEachHandler {
                 $0.logLevel = newValue
             }
         }
@@ -467,33 +476,34 @@ public struct MultiplexLogHandler: LogHandler {
     public func log(level: Logger.Level,
                     message: Logger.Message,
                     metadata: Logger.Metadata?,
-                    file: String, function: String, line: UInt) {
-        self.handlers.forEach { handler in
+                    file: String, function: String, line: UInt)
+    {
+        handlers.forEach { handler in
             handler.log(level: level, message: message, metadata: metadata, file: file, function: function, line: line)
         }
     }
 
     public var metadata: Logger.Metadata {
         get {
-            return self.handlers[0].metadata
+            return handlers[0].metadata
         }
         set {
-            self.mutatingForEachHandler { $0.metadata = newValue }
+            mutatingForEachHandler { $0.metadata = newValue }
         }
     }
 
     public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
         get {
-            return self.handlers[0].metadata[metadataKey]
+            return handlers[0].metadata[metadataKey]
         }
         set {
-            self.mutatingForEachHandler { $0[metadataKey: metadataKey] = newValue }
+            mutatingForEachHandler { $0[metadataKey: metadataKey] = newValue }
         }
     }
 
     private mutating func mutatingForEachHandler(_ mutator: (inout LogHandler) -> Void) {
-        for index in self.handlers.indices {
-            mutator(&self.handlers[index])
+        for index in handlers.indices {
+            mutator(&handlers[index])
         }
     }
 }
@@ -502,16 +512,16 @@ public struct MultiplexLogHandler: LogHandler {
 internal struct StdoutLogHandler: LogHandler {
     private let lock = Lock()
 
-    public init(label: String) {}
+    public init(label _: String) {}
 
     private var _logLevel: Logger.Level = .info
 
     public var logLevel: Logger.Level {
         get {
-            return self.lock.withLock { self._logLevel }
+            return lock.withLock { self._logLevel }
         }
         set {
-            self.lock.withLock {
+            lock.withLock {
                 self._logLevel = newValue
             }
         }
@@ -520,35 +530,36 @@ internal struct StdoutLogHandler: LogHandler {
     private var prettyMetadata: String?
     private var _metadata = Logger.Metadata() {
         didSet {
-            self.prettyMetadata = self.prettify(self._metadata)
+            prettyMetadata = prettify(_metadata)
         }
     }
 
     public func log(level: Logger.Level,
                     message: Logger.Message,
                     metadata: Logger.Metadata?,
-                    file: String, function: String, line: UInt) {
+                    file _: String, function _: String, line _: UInt)
+    {
         let prettyMetadata = metadata?.isEmpty ?? true
             ? self.prettyMetadata
-            : self.prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
-        print("\(self.timestamp()) \(level):\(prettyMetadata.map { " \($0)" } ?? "") \(message)")
+            : prettify(self.metadata.merging(metadata!, uniquingKeysWith: { _, new in new }))
+        print("\(timestamp()) \(level):\(prettyMetadata.map { " \($0)" } ?? "") \(message)")
     }
 
     public var metadata: Logger.Metadata {
         get {
-            return self.lock.withLock { self._metadata }
+            return lock.withLock { self._metadata }
         }
         set {
-            self.lock.withLock { self._metadata = newValue }
+            lock.withLock { self._metadata = newValue }
         }
     }
 
     public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
         get {
-            return self.lock.withLock { self._metadata[metadataKey] }
+            return lock.withLock { self._metadata[metadataKey] }
         }
         set {
-            self.lock.withLock {
+            lock.withLock {
                 self._metadata[metadataKey] = newValue
             }
         }
@@ -584,13 +595,13 @@ extension Logger.MetadataValue: ExpressibleByStringLiteral {
 extension Logger.MetadataValue: CustomStringConvertible {
     public var description: String {
         switch self {
-        case .dictionary(let dict):
+        case let .dictionary(dict):
             return dict.mapValues { $0.description }.description
-        case .array(let list):
+        case let .array(list):
             return list.map { $0.description }.description
-        case .string(let str):
+        case let .string(str):
             return str
-        case .stringConvertible(let repr):
+        case let .stringConvertible(repr):
             return repr.description
         }
     }
@@ -598,8 +609,7 @@ extension Logger.MetadataValue: CustomStringConvertible {
 
 // Extension has to be done on explicit type rather than Logger.Metadata.Value as workaround for
 // https://bugs.swift.org/browse/SR-9687
-extension Logger.MetadataValue: ExpressibleByStringInterpolation {
-}
+extension Logger.MetadataValue: ExpressibleByStringInterpolation {}
 
 // Extension has to be done on explicit type rather than Logger.Metadata.Value as workaround for
 // https://bugs.swift.org/browse/SR-9687

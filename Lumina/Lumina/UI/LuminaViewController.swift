@@ -6,9 +6,9 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import UIKit
 import AVFoundation
 import CoreML
+import UIKit
 
 /// The main class that developers should interact with and instantiate when using Lumina
 open class LuminaViewController: UIViewController {
@@ -31,7 +31,7 @@ open class LuminaViewController: UIViewController {
         guard let camera = self.camera, let layer = camera.getPreviewLayer() else {
             return AVCaptureVideoPreviewLayer()
         }
-        layer.frame = self.view.bounds
+        layer.frame = view.bounds
         _previewLayer = layer
         return layer
     }
@@ -122,18 +122,18 @@ open class LuminaViewController: UIViewController {
         _textPromptView = promptView
         return promptView
     }
-	lazy var confidenceView: UIProgressView = {
-		let progressView = UIProgressView(progressViewStyle: .default)
-		progressView.progressTintColor = UIColor.darkGray
-		progressView.isHidden = true
-		return progressView
-	}()
-	
-	
+
+    lazy var confidenceView: UIProgressView = {
+        let progressView = UIProgressView(progressViewStyle: .default)
+        progressView.progressTintColor = UIColor.darkGray
+        progressView.isHidden = true
+        return progressView
+    }()
+
     var isUpdating = false
 
     /// The delegate for streaming output from Lumina
-    weak open var delegate: LuminaDelegate?
+    open weak var delegate: LuminaDelegate?
 
     /// The position of the camera
     ///
@@ -152,7 +152,7 @@ open class LuminaViewController: UIViewController {
     ///
     /// - Note: Responds live to being set at any time, and will update automatically
     ///
-    /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism. 
+    /// - Warning: This setting takes precedence over video data streaming - if this is turned on, frames cannot be streamed, nor can CoreML be used via Lumina's recognizer mechanism.
     open var recordsVideo = false {
         didSet {
             LuminaLogger.notice(message: "Setting video recording mode to \(recordsVideo)")
@@ -198,13 +198,14 @@ open class LuminaViewController: UIViewController {
             self.textPromptView.updateText(to: textPrompt)
         }
     }
-	open var confidence: Float = 0.0 {
-		didSet {
-			LuminaLogger.notice(message: "Setting confidence view to: \(confidence)")
-			self.confidenceView.isHidden = confidence == 0.0
-			self.confidenceView.setProgress(Float(confidence), animated: true)
-		}
-	}
+
+    open var confidence: Float = 0.0 {
+        didSet {
+            LuminaLogger.notice(message: "Setting confidence view to: \(confidence)")
+            self.confidenceView.isHidden = confidence == 0.0
+            self.confidenceView.setProgress(Float(confidence), animated: true)
+        }
+    }
 
     /// Set this to choose a resolution for the camera at any time - defaults to highest resolution possible for camera
     ///
@@ -244,11 +245,11 @@ open class LuminaViewController: UIViewController {
     }
 
     public func pauseCamera() {
-        self.camera?.stop()
+        camera?.stop()
     }
 
     public func startCamera() {
-        self.camera?.start()
+        camera?.start()
     }
 
     /// A collection of model types that will be used when streaming images for object recognition
@@ -320,7 +321,7 @@ open class LuminaViewController: UIViewController {
     open var streamDepthData: Bool = false {
         didSet {
             LuminaLogger.notice(message: "Attempting to set depth data streaming mode to \(streamDepthData)")
-            self.camera?.streamDepthData = streamDepthData
+            camera?.streamDepthData = streamDepthData
         }
     }
 
@@ -362,33 +363,33 @@ open class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    open override func didReceiveMemoryWarning() {
+    override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         LuminaLogger.error(message: "Camera framework is overloading on memory")
     }
 
     /// override with caution
-    open override func viewWillAppear(_ animated: Bool) {
+    override open func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         createUI()
-        //updateUI(orientation: UIApplication.shared.statusBarOrientation)
-        self.camera?.updateVideo({ result in
+        // updateUI(orientation: UIApplication.shared.statusBarOrientation)
+        camera?.updateVideo { result in
             self.handleCameraSetupResult(result)
-        })
-        if self.recordsVideo {
-            self.camera?.updateAudio({ result in
+        }
+        if recordsVideo {
+            camera?.updateAudio { result in
                 self.handleCameraSetupResult(result)
-            })
+            }
         }
     }
 
     /// override with caution
-    open override func viewDidAppear(_ animated: Bool) {
+    override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         feedbackGenerator.prepare()
     }
 
-    open override var shouldAutorotate: Bool {
+    override open var shouldAutorotate: Bool {
         guard let camera = self.camera else {
             return true
         }
@@ -396,15 +397,15 @@ open class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    open override func viewDidDisappear(_ animated: Bool) {
+    override open func viewDidDisappear(_: Bool) {
         super.viewDidDisappear(true)
-        self.camera?.stop()
+        camera?.stop()
     }
 
     /// override with caution
-    open override func viewWillLayoutSubviews() {
+    override open func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        if self.camera?.recordingVideo == true {
+        if camera?.recordingVideo == true {
             return
         }
         updateUI(orientation: UIApplication.shared.statusBarOrientation)
@@ -412,7 +413,7 @@ open class LuminaViewController: UIViewController {
     }
 
     /// override with caution
-    open override var prefersStatusBarHidden: Bool {
+    override open var prefersStatusBarHidden: Bool {
         return true
     }
 

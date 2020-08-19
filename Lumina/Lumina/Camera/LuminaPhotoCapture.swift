@@ -6,8 +6,8 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 struct LuminaPhotoCapture {
     var camera: LuminaCamera?
@@ -38,7 +38,7 @@ struct LuminaPhotoCapture {
         }
     }
 
-    fileprivate func collectionUpdated() {
+    private func collectionUpdated() {
         LuminaLogger.notice(message: "photo capture struct updating")
         var sendingLivePhotoURL: URL?
         var sendingDepthData: Any?

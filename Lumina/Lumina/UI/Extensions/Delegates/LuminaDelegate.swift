@@ -6,12 +6,11 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import CoreML
+import Foundation
 
 /// Delegate for returning information to the application utilizing Lumina
-public protocol LuminaDelegate: class {
-
+public protocol LuminaDelegate: AnyObject {
     /// Triggered whenever a still image is captured by the user of Lumina
     ///
     /// - Parameters:
@@ -82,12 +81,12 @@ public protocol LuminaDelegate: class {
 // MARK: Extension to make delegate functions optional
 
 public extension LuminaDelegate {
-    func captured(stillImage: UIImage, livePhotoAt: URL?, depthData: Any?, from controller: LuminaViewController) {}
-    func captured(videoAt: URL, from controller: LuminaViewController) {}
-    func streamed(videoFrame: UIImage, from controller: LuminaViewController) {}
-    func streamed(videoFrame: UIImage, with predictions: [LuminaRecognitionResult]?, from controller: LuminaViewController) {}
-    func streamed(depthData: Any, from controller: LuminaViewController) {}
-    func detected(metadata: [Any], from controller: LuminaViewController) {}
-    func dismissed(controller: LuminaViewController) {}
-    func tapped(at: CGPoint, from controller: LuminaViewController) {}
+    func captured(stillImage _: UIImage, livePhotoAt _: URL?, depthData _: Any?, from _: LuminaViewController) {}
+    func captured(videoAt _: URL, from _: LuminaViewController) {}
+    func streamed(videoFrame _: UIImage, from _: LuminaViewController) {}
+    func streamed(videoFrame _: UIImage, with _: [LuminaRecognitionResult]?, from _: LuminaViewController) {}
+    func streamed(depthData _: Any, from _: LuminaViewController) {}
+    func detected(metadata _: [Any], from _: LuminaViewController) {}
+    func dismissed(controller _: LuminaViewController) {}
+    func tapped(at _: CGPoint, from _: LuminaViewController) {}
 }

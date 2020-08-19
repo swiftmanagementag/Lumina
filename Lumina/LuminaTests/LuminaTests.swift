@@ -6,11 +6,10 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import XCTest
 @testable import Lumina
+import XCTest
 
 class LuminaTests: XCTestCase {
-
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -28,7 +27,7 @@ class LuminaTests: XCTestCase {
 
     func testPerformanceExample() {
         // This is an example of a performance test case.
-        self.measure {
+        measure {
             // Put the code you want to measure the time of here.
         }
     }
@@ -54,5 +53,4 @@ class LuminaTests: XCTestCase {
         XCTAssertFalse(LuminaLogger.wouldLog(level: .debug))
         XCTAssertFalse(LuminaLogger.wouldLog(level: .trace))
     }
-
 }

@@ -6,12 +6,12 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 extension LuminaCamera {
     func getPreviewLayer() -> AVCaptureVideoPreviewLayer? {
-        let previewLayer = AVCaptureVideoPreviewLayer(session: self.session)
+        let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill
         return previewLayer
     }
@@ -26,21 +26,21 @@ extension LuminaCamera {
             }
         }
         settings.isAutoStillImageStabilizationEnabled = true
-        switch self.torchState {
-        //swiftlint:disable empty_enum_arguments
-        case .on(_):
+        switch torchState {
+        // swiftlint:disable empty_enum_arguments
+        case .on:
             settings.flashMode = .on
         case .off:
             settings.flashMode = .off
         case .auto:
             settings.flashMode = .auto
         }
-        if self.captureLivePhotos {
+        if captureLivePhotos {
             let fileName = NSTemporaryDirectory().appending("livePhoto" + Date().iso8601 + ".mov")
             settings.livePhotoMovieFileURL = URL(fileURLWithPath: fileName)
             LuminaLogger.notice(message: "live photo filename will be \(fileName)")
         }
-        if self.captureHighResolutionImages {
+        if captureHighResolutionImages {
             settings.isHighResolutionPhotoEnabled = true
         }
         if #available(iOS 11.0, *) {
@@ -49,12 +49,12 @@ extension LuminaCamera {
                 settings.isDepthDataDeliveryEnabled = true
             }
         }
-        self.photoOutput.capturePhoto(with: settings, delegate: self)
+        photoOutput.capturePhoto(with: settings, delegate: self)
     }
 
     func startVideoRecording() {
         LuminaLogger.notice(message: "attempting to start video recording")
-        if self.resolution == .photo {
+        if resolution == .photo {
             LuminaLogger.error(message: "Cannot start video recording - resolution is in .photo mode")
             return
         }

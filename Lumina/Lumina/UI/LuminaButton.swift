@@ -10,7 +10,7 @@ import UIKit
 
 enum SystemButtonType {
     enum FlashState {
-        //swiftlint:disable identifier_name
+        // swiftlint:disable identifier_name
         case on
         case off
         case auto
@@ -37,7 +37,7 @@ final class LuminaButton: UIButton {
             return _image
         }
         set {
-			self.setImage(newValue, for: UIControl.State.normal)
+            setImage(newValue, for: UIControl.State.normal)
             _image = newValue
         }
     }
@@ -48,14 +48,14 @@ final class LuminaButton: UIButton {
             return _text
         }
         set {
-			self.setTitle(newValue, for: UIControl.State.normal)
+            self.setTitle(newValue, for: UIControl.State.normal)
             _text = newValue
         }
     }
 
     required init() {
         super.init(frame: CGRect.zero)
-        self.backgroundColor = UIColor.clear
+        backgroundColor = UIColor.clear
         if let titleLabel = self.titleLabel {
             titleLabel.textColor = UIColor.white
             titleLabel.font = UIFont.systemFont(ofSize: 20)
@@ -65,57 +65,57 @@ final class LuminaButton: UIButton {
 
     init(with systemStyle: SystemButtonType) {
         super.init(frame: CGRect.zero)
-        self.style = systemStyle
-        self.backgroundColor = UIColor.clear
+        style = systemStyle
+        backgroundColor = UIColor.clear
         if let titleLabel = self.titleLabel {
             titleLabel.textColor = UIColor.white
             titleLabel.font = UIFont.systemFont(ofSize: 20)
         }
         switch systemStyle {
         case .torch:
-            self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            self.frame = CGRect(origin: CGPoint(x: 16, y: 126), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
-            // addButtonShadowEffects()
+            image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            frame = CGRect(origin: CGPoint(x: 16, y: 126), size: CGSize(width: squareSystemButtonWidth, height: squareSystemButtonHeight))
+        // addButtonShadowEffects()
         case .cameraSwitch:
-            self.image = UIImage(named: "cameraSwitch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
-            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 56, y: 16), size: CGSize(width: self.squareSystemButtonWidth, height: self.squareSystemButtonHeight))
-            //  addButtonShadowEffects()
+            image = UIImage(named: "cameraSwitch", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 56, y: 16), size: CGSize(width: squareSystemButtonWidth, height: squareSystemButtonHeight))
+        //  addButtonShadowEffects()
         case .cancel:
-            self.text = "x"
-			// Positioning change
-			self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 56, y: UIScreen.main.bounds.minY + 56), size: CGSize(width: self.cancelButtonWidth, height: self.cancelButtonHeight))
-			print(self.frame)
-			self.layer.cornerRadius = CGFloat(self.cancelButtonWidth) / 2.0
-			self.layer.masksToBounds = true
-			self.backgroundColor = UIColor.black
-			self.alpha = 0.8
-			self.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 6, right: 0)
-			self.titleLabel?.font = UIFont(name: "AvenirNext-DemiBold", size: 32)
-			//self.titleLabel?.textColor = UIColor.white
-//			self.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
-            //self.titleLabel?.layer.shadowOpacity = 0
+            text = "x"
+            // Positioning change
+            frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.maxX - 56, y: UIScreen.main.bounds.minY + 56), size: CGSize(width: cancelButtonWidth, height: cancelButtonHeight))
+            print(frame)
+            layer.cornerRadius = CGFloat(cancelButtonWidth) / 2.0
+            layer.masksToBounds = true
+            backgroundColor = UIColor.black
+            alpha = 0.8
+            contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 6, right: 0)
+            titleLabel?.font = UIFont(name: "AvenirNext-DemiBold", size: 32)
+        // self.titleLabel?.textColor = UIColor.white
+        //			self.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 0)
+        // self.titleLabel?.layer.shadowOpacity = 0
 //            self.titleLabel?.layer.shadowRadius = 0
         case .shutter:
-            self.backgroundColor = UIColor.normalState
+            backgroundColor = UIColor.normalState
             var minY = UIScreen.main.bounds.maxY
             if #available(iOS 11, *) {
                 minY = self.safeAreaLayoutGuide.layoutFrame.maxY
             }
-            minY -=  80
-            self.frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: minY), size: CGSize(width: self.shutterButtonDimension, height: self.shutterButtonDimension))
-            self.layer.cornerRadius = CGFloat(self.shutterButtonDimension / 2)
-            self.layer.borderWidth = 3
-            self.layer.borderColor = UIColor.borderNormalState
+            minY -= 80
+            frame = CGRect(origin: CGPoint(x: UIScreen.main.bounds.midX - 35, y: minY), size: CGSize(width: shutterButtonDimension, height: shutterButtonDimension))
+            layer.cornerRadius = CGFloat(shutterButtonDimension / 2)
+            layer.borderWidth = 3
+            layer.borderColor = UIColor.borderNormalState
         default:
             break
         }
     }
 
     private func addButtonShadowEffects() {
-        self.layer.shadowOffset = CGSize(width: 0, height: 0)
-		// remove shadow
-		self.layer.shadowOpacity = 0
-        self.layer.shadowRadius = 0
+        layer.shadowOffset = CGSize(width: 0, height: 0)
+        // remove shadow
+        layer.shadowOpacity = 0
+        layer.shadowRadius = 0
     }
 
     func startRecordingVideo() {
@@ -170,19 +170,19 @@ extension LuminaButton {
         }
         switch state {
         case .on:
-            self.image = UIImage(named: "cameraTorchOn", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            image = UIImage(named: "cameraTorchOn", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             LuminaLogger.debug(message: "torch icon updated to on")
         case .off:
-            self.image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            image = UIImage(named: "cameraTorchOff", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             LuminaLogger.debug(message: "torch icon updated to off")
         case .auto:
-            self.image = UIImage(named: "cameraTorchAuto", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
+            image = UIImage(named: "cameraTorchAuto", in: Bundle(for: LuminaViewController.self), compatibleWith: nil)
             LuminaLogger.debug(message: "torch icon updated to auto")
         }
     }
 }
 
-fileprivate extension UIColor {
+private extension UIColor {
     class var normalState: UIColor {
         return UIColor(white: 1.0, alpha: 0.65)
     }

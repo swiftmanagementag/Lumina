@@ -6,8 +6,8 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 /// The position of the camera that is active on Lumina
 public enum CameraPosition: String {

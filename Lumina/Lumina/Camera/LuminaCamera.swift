@@ -6,14 +6,14 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import UIKit
 import AVFoundation
 import CoreML
+import UIKit
 
-protocol LuminaCameraDelegate: class {
+protocol LuminaCameraDelegate: AnyObject {
     func stillImageCaptured(camera: LuminaCamera, image: UIImage, livePhotoURL: URL?, depthData: Any?)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage)
-    @available (iOS 11.0, *)
+    @available(iOS 11.0, *)
     func videoFrameCaptured(camera: LuminaCamera, frame: UIImage, predictedObjects: [LuminaRecognitionResult]?)
     func depthDataCaptured(camera: LuminaCamera, depthData: Any)
     func videoRecordingCaptured(camera: LuminaCamera, videoURL: URL)
@@ -46,7 +46,7 @@ enum CameraSetupResult: String {
 }
 
 public enum TorchState {
-    //swiftlint:disable identifier_name
+    // swiftlint:disable identifier_name
     case on(intensity: Float)
     case off
     case auto
@@ -57,14 +57,14 @@ final class LuminaCamera: NSObject {
 
     var torchState: TorchState = .off {
         didSet {
-            guard let input = self.videoInput else {
+            guard let input = videoInput else {
                 torchState = .off
                 return
             }
             do {
                 try input.device.lockForConfiguration()
                 switch torchState {
-                case .on(let intensity):
+                case let .on(intensity):
                     if input.device.isTorchModeSupported(.on) {
                         try input.device.setTorchModeOn(level: intensity)
                         LuminaLogger.notice(message: "torch mode set to on with intensity: \(intensity)")
@@ -207,9 +207,9 @@ final class LuminaCamera: NSObject {
             deviceTypes.append(.builtInDualCamera)
         }
         #if swift(>=4.0.2) // Xcode 9.1 shipped with Swift 4.0.2
-        if #available(iOS 11.1, *), self.captureDepthData == true {
-            deviceTypes.append(.builtInTrueDepthCamera)
-        }
+            if #available(iOS 11.1, *), captureDepthData == true {
+                deviceTypes.append(.builtInTrueDepthCamera)
+            }
         #endif
         return AVCaptureDevice.DiscoverySession(deviceTypes: deviceTypes, mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
     }
@@ -230,6 +230,7 @@ final class LuminaCamera: NSObject {
         output.setSampleBufferDelegate(self, queue: videoBufferQueue)
         return output
     }
+
     var photoOutput = AVCapturePhotoOutput()
 
     private var _metadataOutput: AVCaptureMetadataOutput?
@@ -272,14 +273,14 @@ final class LuminaCamera: NSObject {
 
     func start() {
         LuminaLogger.notice(message: "starting capture session")
-        self.sessionQueue.async {
+        sessionQueue.async {
             self.session.startRunning()
         }
     }
 
     func stop() {
         LuminaLogger.notice(message: "stopping capture session")
-        self.sessionQueue.async {
+        sessionQueue.async {
             self.session.stopRunning()
         }
     }

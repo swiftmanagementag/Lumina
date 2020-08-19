@@ -6,11 +6,11 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import Foundation
 import AVFoundation
+import Foundation
 
 extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+    func fileOutput(_: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from _: [AVCaptureConnection], error: Error?) {
         DispatchQueue.main.async {
             if error == nil, let delegate = self.delegate {
                 delegate.videoRecordingCaptured(camera: self, videoURL: outputFileURL)
@@ -18,22 +18,22 @@ extension LuminaCamera: AVCaptureFileOutputRecordingDelegate {
         }
     }
 
-    func photoOutput(_ output: AVCapturePhotoOutput, willBeginCaptureFor resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        if self.captureLivePhotos {
+    func photoOutput(_: AVCapturePhotoOutput, willBeginCaptureFor _: AVCaptureResolvedPhotoSettings) {
+        if captureLivePhotos {
             LuminaLogger.notice(message: "beginning live photo capture")
-            self.delegate?.cameraBeganTakingLivePhoto(camera: self)
+            delegate?.cameraBeganTakingLivePhoto(camera: self)
         }
     }
 
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt outputFileURL: URL, resolvedSettings: AVCaptureResolvedPhotoSettings) {
-        if self.captureLivePhotos {
+    func photoOutput(_: AVCapturePhotoOutput, didFinishRecordingLivePhotoMovieForEventualFileAt _: URL, resolvedSettings _: AVCaptureResolvedPhotoSettings) {
+        if captureLivePhotos {
             LuminaLogger.notice(message: "finishing live photo capture")
-            self.delegate?.cameraFinishedTakingLivePhoto(camera: self)
+            delegate?.cameraFinishedTakingLivePhoto(camera: self)
         }
     }
 
-    //swiftlint:disable function_parameter_count
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration: CMTime, photoDisplayTime: CMTime, resolvedSettings: AVCaptureResolvedPhotoSettings, error: Error?) {
+    // swiftlint:disable function_parameter_count
+    func photoOutput(_: AVCapturePhotoOutput, didFinishProcessingLivePhotoToMovieFileAt outputFileURL: URL, duration _: CMTime, photoDisplayTime _: CMTime, resolvedSettings _: AVCaptureResolvedPhotoSettings, error _: Error?) {
         photoCollectionQueue.sync {
             if self.currentPhotoCollection == nil {
                 var collection = LuminaPhotoCapture()

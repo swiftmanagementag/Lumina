@@ -8,8 +8,8 @@
 //  Thank you to Saoud M. Rizwan!
 //  https://medium.com/@sdrzn/make-your-ios-app-feel-better-a-comprehensive-guide-over-taptic-engine-and-haptic-feedback-724dec425f10
 
-import UIKit
 import AudioToolbox.AudioServices
+import UIKit
 
 final class LuminaHapticFeedbackGenerator {
     private let notificationGeneratorSharedInstance = UINotificationFeedbackGenerator()
@@ -46,9 +46,9 @@ internal extension UIDevice {
 
     static var hasNotch: Bool {
         return platform == .iPhoneXSMax ||
-               platform == .iPhoneXS ||
-               platform == .iPhoneXR ||
-               platform == .iPhoneX
+            platform == .iPhoneXS ||
+            platform == .iPhoneXR ||
+            platform == .iPhoneX
     }
 
     static var platform: DevicePlatform {

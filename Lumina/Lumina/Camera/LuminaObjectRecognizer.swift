@@ -6,8 +6,8 @@
 //  Copyright © 2017 David Okun. All rights reserved.
 //
 
-import UIKit
 import CoreML
+import UIKit
 import Vision
 
 /// An object that represents a prediction about an object that Lumina detects
